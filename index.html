@@ -1,1123 +1,1051 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, Target, Trophy, CheckCircle, Plus, Edit3, Trash2, Star, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// Componente LifeBar (Rediseñado)
-const LifeBar = ({ currentPoints, maxPoints = 125 }) => {
-  const percentage = Math.min((currentPoints / maxPoints) * 100, 100);
-  const barWidth = `${percentage}%`;
-  
-  // Determinar color basado en porcentaje con tonos suaves y sombra
-  let barColor;
-  let shadowColor;
-  if (percentage >= 75) {
-    barColor = 'from-green-500 to-emerald-500';
-    shadowColor = 'shadow-green-500/50';
-  } else if (percentage >= 50) {
-    barColor = 'from-blue-500 to-cyan-500';
-    shadowColor = 'shadow-blue-500/50';
-  } else if (percentage >= 25) {
-    barColor = 'from-yellow-500 to-amber-500';
-    shadowColor = 'shadow-yellow-500/50';
-  } else {
-    barColor = 'from-red-500 to-pink-500';
-    shadowColor = 'shadow-red-500/50';
-  }
-
-  return (
-    <div className={`w-full bg-gray-700/50 backdrop-blur-sm rounded-full h-7 border border-white/30 overflow-hidden shadow-2xl ${shadowColor} relative`}> 
-      {/* Barra de progreso principal */}
-      <motion.div
-        className={`h-full bg-gradient-to-r ${barColor} relative overflow-hidden flex items-center justify-center`}
-        style={{ width: barWidth }}
-        initial={{ width: 0 }}
-        animate={{ width: barWidth }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        {/* Efecto de brillo animado */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-      </motion.div>
-      
-      {/* Texto de HP centrado sobre la barra */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none"> 
-        <span className="text-white text-sm font-extrabold drop-shadow-md flex items-center">
-            <Heart className="w-4 h-4 mr-1 text-red-400" />
-            {currentPoints} / {maxPoints} HP
-        </span>
-      </div>
-    </div>
-  );
-};
-
-const App = () => {
-  const [activeTab, setActiveTab] = useState('daily');
-  const [dailyActivities, setDailyActivities] = useState([
-    { id: 1, name: 'Hacer la cama', completed: false, reward: 10 },
-    { id: 2, name: 'Ordenar juguetes', completed: true, reward: 15 },
-    { id: 3, name: 'Tareas escolares', completed: false, reward: 20 }
-  ]);
-  
-  const [schedule, setSchedule] = useState([
-    { id: 1, time: '08:00', endTime: '08:30', activity: 'Desayuno', day: 'monday' },
-    { id: 2, time: '09:00', endTime: '11:00', activity: 'Clases', day: 'monday' },
-    { id: 3, time: '12:00', endTime: '12:30', activity: 'Almuerzo', day: 'tuesday' }
-  ]);
-  
-  const [agenda, setAgenda] = useState([
-    { 
-      id: 1, 
-      date: '2025-11-26', 
-      time: '10:00', 
-      eventType: 'Examen', 
-      subject: 'Matemáticas', 
-      comments: 'Preparar temas de álgebra',
-      completed: false 
-    },
-    { 
-      id: 2, 
-      date: '2025-11-28', 
-      time: '15:00', 
-      eventType: 'Reunión', 
-      subject: 'Padres', 
-      comments: 'Entrevista con el director',
-      completed: true 
-    },
-    { 
-      id: 3, 
-      date: '2025-12-01', 
-      time: '09:30', 
-      eventType: 'Visita', 
-      subject: 'Médico', 
-      comments: 'Chequeo anual',
-      completed: false 
-    }
-  ]);
-  
-  const [rewards, setRewards] = useState([
-    { id: 1, name: '30 minutos de videojuegos', cost: 50, unlocked: true },
-    { id: 2, name: 'Helado especial', cost: 75, unlocked: false },
-    { id: 3, name: 'Nueva skin de Fortnite', cost: 150, unlocked: false }
-  ]);
-  
-  const [totalPoints, setTotalPoints] = useState(25);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false); // Unificado para Daily y Agenda
-  const [showEditScheduleModal, setShowEditScheduleModal] = useState(false);
-  const [showEditRewardModal, setShowEditRewardModal] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [editingEvent, setEditingEvent] = useState(null);
-  const [editingScheduleItem, setEditingScheduleItem] = useState(null);
-  const [editingReward, setEditingReward] = useState(null);
-  const [newItem, setNewItem] = useState({ 
-    name: '', 
-    time: '', 
-    endTime: '',
-    day: '',
-    date: '', 
-    cost: '', 
-    activity: '',
-    eventType: '',
-    subject: '',
-    comments: ''
-  });
-
-  const toggleActivity = (id, type) => {
-    if (type === 'daily') {
-      const activity = dailyActivities.find(a => a.id === id);
-      if (activity) {
-        setDailyActivities(prev => prev.map(a => 
-          a.id === id 
-            ? { ...a, completed: !a.completed } 
-            : a
-        ));
-        // Actualizar puntos
-        if (!activity.completed) {
-          setTotalPoints(prev => prev + activity.reward);
-        } else {
-          setTotalPoints(prev => prev - activity.reward);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shukudai: Misión Recompensa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4f46e5; /* Indigo 600 */
+            --secondary: #facc15; /* Yellow 400 */
+            --danger: #ef4444; /* Red 500 */
         }
-      }
-    } else if (type === 'agenda') {
-      setAgenda(prev => prev.map(event => 
-        event.id === id 
-          ? { ...event, completed: !event.completed } 
-          : event
-      ));
-    }
-  };
-
-  const addNewItem = () => {
-    // Implementación original...
-    if (modalType === 'daily') {
-      const newItemObj = {
-        id: Date.now(),
-        name: newItem.name,
-        completed: false,
-        reward: parseInt(newItem.cost) || 10
-      };
-      setDailyActivities(prev => [...prev, newItemObj]);
-    } else if (modalType === 'schedule') {
-      if (newItem.time >= newItem.endTime) {
-        alert('La hora de fin debe ser mayor que la hora de inicio');
-        return;
-      }
-      const newItemObj = {
-        id: Date.now(),
-        time: newItem.time,
-        endTime: newItem.endTime,
-        activity: newItem.activity,
-        day: newItem.day
-      };
-      setSchedule(prev => [...prev, newItemObj]);
-    } else if (modalType === 'agenda') {
-      const newItemObj = {
-        id: Date.now(),
-        date: newItem.date,
-        time: newItem.time,
-        eventType: newItem.eventType,
-        subject: newItem.subject,
-        comments: newItem.comments,
-        completed: false
-      };
-      setAgenda(prev => [...prev, newItemObj]);
-    } else if (modalType === 'reward') {
-      const newItemObj = {
-        id: Date.now(),
-        name: newItem.name,
-        cost: parseInt(newItem.cost) || 25,
-        unlocked: false
-      };
-      setRewards(prev => [...prev, newItemObj]);
-    }
-    
-    setNewItem({ 
-      name: '', 
-      time: '', 
-      endTime: '',
-      day: '',
-      date: '', 
-      cost: '', 
-      activity: '',
-      eventType: '',
-      subject: '',
-      comments: ''
-    });
-    setShowAddModal(false);
-  };
-
-  // Funciones de edición unificadas:
-  
-  const editEvent = (event) => { // Para Agenda
-    setEditingEvent(event);
-    setNewItem({
-      date: event.date,
-      time: event.time,
-      eventType: event.eventType,
-      subject: event.subject,
-      comments: event.comments
-    });
-    setModalType('agenda');
-    setShowEditModal(true);
-  };
-
-  const editDailyActivity = (activity) => { // Para Daily
-    setEditingEvent(activity);
-    setNewItem({
-      name: activity.name,
-      cost: activity.reward
-    });
-    setModalType('daily');
-    setShowEditModal(true);
-  };
-
-  const updateEvent = () => { // Guarda Agenda
-    setAgenda(prev => prev.map(event => 
-      event.id === editingEvent.id 
-        ? { ...event, 
-            date: newItem.date,
-            time: newItem.time,
-            eventType: newItem.eventType,
-            subject: newItem.subject,
-            comments: newItem.comments
-          }
-        : event
-    ));
-    setNewItem({ name: '', time: '', endTime: '', day: '', date: '', cost: '', activity: '', eventType: '', subject: '', comments: '' });
-    setShowEditModal(false);
-    setEditingEvent(null);
-  };
-
-  const updateDailyActivity = () => { // Guarda Daily
-    setDailyActivities(prev => prev.map(activity => 
-      activity.id === editingEvent.id 
-        ? { ...activity, 
-            name: newItem.name,
-            reward: parseInt(newItem.cost) || 10
-          }
-        : activity
-    ));
-    setNewItem({ name: '', time: '', endTime: '', day: '', date: '', cost: '', activity: '', eventType: '', subject: '', comments: '' });
-    setShowEditModal(false);
-    setEditingEvent(null);
-  };
-
-  // Funciones de eliminación originales...
-  const deleteEvent = (id) => {
-    setAgenda(prev => prev.filter(event => event.id !== id));
-  };
-
-  const deleteDailyActivity = (id) => {
-    setDailyActivities(prev => prev.filter(activity => activity.id !== id));
-  };
-  
-  const editScheduleItem = (item) => {
-    setEditingScheduleItem(item);
-    setNewItem({
-      time: item.time,
-      endTime: item.endTime || '',
-      activity: item.activity,
-      day: item.day
-    });
-    setShowEditScheduleModal(true);
-  };
-
-  const updateScheduleItem = () => {
-    if (newItem.time >= newItem.endTime) {
-      alert('La hora de fin debe ser mayor que la hora de inicio');
-      return;
-    }
-    
-    setSchedule(prev => prev.map(item => 
-      item.id === editingScheduleItem.id 
-        ? { ...item, 
-            time: newItem.time,
-            endTime: newItem.endTime,
-            activity: newItem.activity,
-            day: newItem.day
-          }
-        : item
-    ));
-    setNewItem({ name: '', time: '', endTime: '', day: '', date: '', cost: '', activity: '', eventType: '', subject: '', comments: '' });
-    setShowEditScheduleModal(false);
-    setEditingScheduleItem(null);
-  };
-
-  const deleteScheduleItem = (id) => {
-    setSchedule(prev => prev.filter(item => item.id !== id));
-  };
-
-  const editReward = (reward) => {
-    setEditingReward(reward);
-    setNewItem({
-      name: reward.name,
-      cost: reward.cost
-    });
-    setShowEditRewardModal(true);
-  };
-
-  const updateReward = () => {
-    setRewards(prev => prev.map(reward => 
-      reward.id === editingReward.id 
-        ? { ...reward, 
-            name: newItem.name,
-            cost: parseInt(newItem.cost) || 25
-          }
-        : reward
-    ));
-    setNewItem({ name: '', time: '', endTime: '', day: '', date: '', cost: '', activity: '', eventType: '', subject: '', comments: '' });
-    setShowEditRewardModal(false);
-    setEditingReward(null);
-  };
-
-  const deleteReward = (id) => {
-    setRewards(prev => prev.filter(reward => reward.id !== id));
-  };
-
-  // FUNCIÓN DE CANJEO DE RECOMPENSAS (NUEVA)
-  const redeemReward = (id, cost) => {
-    if (totalPoints >= cost) {
-      // Restar el costo de los puntos totales
-      setTotalPoints(prev => prev - cost);
-      
-      // Marcar la recompensa como desbloqueada
-      setRewards(prev => prev.map(reward => 
-        reward.id === id 
-          ? { ...reward, unlocked: true } 
-          : reward
-      ));
-    } else {
-      alert('¡Puntos insuficientes! Necesitas ' + (cost - totalPoints) + ' puntos más.');
-    }
-  };
-
-
-  const renderDailyActivities = () => (
-    <div className="space-y-4">
-      {dailyActivities.map(activity => (
-        <motion.div
-          key={activity.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => toggleActivity(activity.id, 'daily')}
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
-                  activity.completed 
-                    ? 'bg-green-500 border-green-500' 
-                    : 'border-white/30 hover:border-green-400'
-                }`}
-              >
-                {activity.completed && <CheckCircle className="w-5 h-5 text-white" />}
-              </button>
-              <span className={`text-lg font-medium ${activity.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                {activity.name}
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Star className="w-5 h-5 text-yellow-400" />
-              <span className="text-yellow-400 font-bold">{activity.reward}</span>
-              <div className="flex items-center space-x-1">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => editDailyActivity(activity)}
-                  className="p-1 bg-blue-500 text-white rounded"
-                >
-                  <Edit3 className="w-4 h-4" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => deleteDailyActivity(activity.id)}
-                  className="p-1 bg-red-500 text-white rounded"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      ))}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => {
-          setModalType('daily');
-          setNewItem({ name: '', cost: '' });
-          setShowAddModal(true);
-        }}
-        className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2"
-      >
-        <Plus className="w-5 h-5" />
-        <span>Añadir Actividad</span>
-      </motion.button>
-    </div>
-  );
-
-  const renderSchedule = () => (
-    <div className="space-y-4">
-      {schedule.map(item => (
-        <motion.div
-          key={item.id}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 flex items-center justify-between"
-        >
-          <div className="flex items-center space-x-4">
-            <Clock className="w-6 h-6 text-blue-400" />
-            <div>
-              <div className="text-lg font-medium text-white">{item.time} - {item.endTime}</div>
-              <div className="text-gray-300">{item.activity} ({item.day})</div>
-            </div>
-          </div>
-          <div className="flex items-center space-x-1">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => editScheduleItem(item)}
-              className="p-2 bg-blue-500 text-white rounded-lg"
-            >
-              <Edit3 className="w-4 h-4" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => deleteScheduleItem(item.id)}
-              className="p-2 bg-red-500 text-white rounded-lg"
-            >
-              <Trash2 className="w-4 h-4" />
-            </motion.button>
-          </div>
-        </motion.div>
-      ))}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => {
-          setModalType('schedule');
-          setNewItem({ time: '', endTime: '', activity: '', day: '' });
-          setShowAddModal(true);
-        }}
-        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2"
-      >
-        <Plus className="w-5 h-5" />
-        <span>Añadir Horario</span>
-      </motion.button>
-    </div>
-  );
-
-  const renderAgenda = () => (
-    <div className="space-y-4">
-      {agenda.map(event => (
-        <motion.div
-          key={event.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => toggleActivity(event.id, 'agenda')}
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
-                  event.completed 
-                    ? 'bg-green-500 border-green-500' 
-                    : 'border-white/30 hover:border-green-400'
-                }`}
-              >
-                {event.completed && <CheckCircle className="w-5 h-5 text-white" />}
-              </button>
-              <div>
-                <div className="text-lg font-medium text-white">{event.eventType}</div>
-                <div className="text-gray-300">{event.subject}</div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => editEvent(event)}
-                className="p-2 bg-blue-500 text-white rounded-lg"
-              >
-                <Edit3 className="w-4 h-4" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => deleteEvent(event.id)}
-                className="p-2 bg-red-500 text-white rounded-lg"
-              >
-                <Trash2 className="w-4 h-4" />
-              </motion.button>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="text-gray-300">
-              <Calendar className="w-4 h-4 inline mr-1" />
-              {event.date}
-            </div>
-            <div className="text-gray-300">
-              <Clock className="w-4 h-4 inline mr-1" />
-              {event.time}
-            </div>
-          </div>
-          {event.comments && (
-            <div className="mt-2 text-sm text-gray-400 italic">
-              "{event.comments}"
-            </div>
-          )}
-        </motion.div>
-      ))}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => {
-          setModalType('agenda');
-          setNewItem({ date: '', time: '', eventType: '', subject: '', comments: '' });
-          setShowAddModal(true);
-        }}
-        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2"
-      >
-        <Plus className="w-5 h-5" />
-        <span>Añadir Evento</span>
-      </motion.button>
-    </div>
-  );
-
-  const renderRewards = () => (
-    <div className="space-y-4">
-      {rewards.map(reward => (
-        <motion.div
-          key={reward.id}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className={`bg-white/10 backdrop-blur-sm rounded-xl p-4 border ${
-            reward.unlocked 
-              ? 'border-yellow-400 bg-yellow-400/20' 
-              : totalPoints >= reward.cost 
-                ? 'border-green-400 bg-green-400/20' 
-                : 'border-white/20'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Trophy className={`w-6 h-6 ${reward.unlocked ? 'text-yellow-400' : 'text-gray-400'}`} />
-              <div>
-                <div className="text-lg font-bold text-white">{reward.name}</div>
-                <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  <span className="text-yellow-400 font-bold">{reward.cost}</span>
-                  <span className="text-gray-400">puntos</span>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            padding-bottom: 80px; /* Espacio para el dock */
+        }
+        .dock-btn.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .dock-btn.active .icon {
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Tareas */
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        .task.completed {
+            background-color: #d1fae5; /* Green 100 */
+        }
+        .task.failed {
+            background-color: #fee2e2; /* Red 100 */
+        }
+        .btn-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+        .btn-circle:active {
+            transform: scale(0.95);
+        }
+        .check {
+            background-color: #10b981; /* Emerald 500 */
+            color: white;
+            margin-right: 8px;
+        }
+        .cross {
+            background-color: #f59e0b; /* Amber 500 */
+            color: white;
+        }
+        
+        /* Tienda */
+        .premio-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .premio-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .premio-icono {
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .price-tag {
+            background-color: var(--secondary);
+            color: #1f2937;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        
+        /* Horario */
+        .horario-dia {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .dia-titulo {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .asignatura {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            background-color: white;
+        }
+        .asignatura:last-child {
+            border-bottom: none;
+        }
+        .extra-curricular {
+            background-color: #fef3c7; /* Yellow 100 */
+            font-weight: 600;
+        }
+        
+        /* Agenda */
+        .agenda-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .agenda-card.examen { border-left: 6px solid #ef4444; } /* Red */
+        .agenda-card.cita { border-left: 6px solid #3b82f6; } /* Blue */
+        .agenda-card.entrega { border-left: 6px solid #22c55e; } /* Green */
+        .agenda-card.otro { border-left: 6px solid #9ca3af; } /* Gray */
+        
+        .agenda-title {
+            font-weight: 800;
+            font-size: 1.125rem;
+            color: var(--primary);
+        }
+        .agenda-info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .agenda-comments {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        .agenda-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .agenda-actions button {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .btn-edit { background-color: #e5e7eb; color: #1f2937; }
+        .btn-delete { background-color: #fecaca; color: #dc2626; }
+        
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+            font-size: 1.125rem;
+            font-weight: bold;
+            padding: 0.75rem;
+            background-color: #e0e7ff; /* Indigo 100 */
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        /* Fallback for details marker in some browsers */
+        details > summary::after {
+            content: '+';
+            float: right;
+            font-weight: bold;
+        }
+        details[open] > summary::after {
+            content: '-';
+        }
+        
+        /* Estilo para botón deshabilitado del Pomodoro */
+        #btnResetTimer:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="max-w-xl mx-auto p-4 bg-white shadow-lg sm:rounded-xl min-h-screen sm:min-h-0 sm:my-4">
+        
+        <header class="text-center mb-6 p-4 bg-indigo-50 rounded-lg shadow-md">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Shukudai GO! ⭐</h1>
+            <div class="flex justify-around items-center mb-4">
+                <div class="stat-box">
+                    <div class="text-xs font-medium text-gray-500">Puntos (Pts)</div>
+                    <div id="puntosTotales" class="text-3xl font-extrabold text-indigo-600">0</div>
                 </div>
-              </div>
+                <div class="stat-box">
+                    <div class="text-xs font-medium text-gray-500">Minutos (Min)</div>
+                    <div id="minutosTotales" class="text-3xl font-extrabold text-amber-500">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="text-xs font-medium text-gray-500">Nivel</div>
+                    <div id="nivelActual" class="text-3xl font-extrabold text-red-500">1</div>
+                </div>
             </div>
-            <div className="flex items-center space-x-1">
-              {/* Botones de edición y borrado */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => editReward(reward)}
-                className="p-2 bg-blue-500 text-white rounded-lg"
-              >
-                <Edit3 className="w-4 h-4" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => deleteReward(reward.id)}
-                className="p-2 bg-red-500 text-white rounded-lg"
-              >
-                <Trash2 className="w-4 h-4" />
-              </motion.button>
+            
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="xpFill" class="bg-indigo-500 h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
             </div>
-            <div className="text-right">
-              {/* Lógica de Canjeo */}
-              {reward.unlocked ? (
-                <span className="text-green-400 font-bold">¡Desbloqueado!</span>
-              ) : totalPoints >= reward.cost ? (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => redeemReward(reward.id, reward.cost)} // Llama a la nueva función
-                  className="bg-green-500 text-white px-3 py-1 rounded-lg font-bold"
-                >
-                  Canjear
-                </motion.button>
-              ) : (
-                <span className="text-red-400">Necesitas {reward.cost - totalPoints} más</span>
-              )}
+            <div id="xpTexto" class="text-xs text-gray-600 mt-1 font-medium">0 / 125 xp</div>
+            
+            <div class="flex justify-center space-x-2 mt-4">
+                <button id="btnPremioDiario" class="px-3 py-1 bg-yellow-500 text-white text-sm font-bold rounded-full hover:bg-yellow-600 transition shadow-sm">
+                    🎁 Diario (+10)
+                </button>
+                <button id="btnPremioSemanal" class="px-3 py-1 bg-green-500 text-white text-sm font-bold rounded-full hover:bg-green-600 transition shadow-sm">
+                    🏆 Semanal (+70)
+                </button>
             </div>
-          </div>
-        </motion.div>
-      ))}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => {
-          setModalType('reward');
-          setNewItem({ name: '', cost: '' });
-          setShowAddModal(true);
-        }}
-        className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2"
-      >
-        <Plus className="w-5 h-5" />
-        <span>Añadir Recompensa</span>
-      </motion.button>
+        </header>
+
+        <main class="mb-20">
+            
+            <section id="vistaTareas" class="view">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Tareas de Hoy 📝</h2>
+                
+                <div class="mb-6 p-4 bg-indigo-100 rounded-lg shadow-inner text-center">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-2">Focus Timer ⏲️ (Pomodoro)</h3>
+                    <div id="timerDisplay" class="text-6xl font-extrabold text-indigo-900 mb-4">25:00</div>
+                    <div class="flex justify-center space-x-4">
+                        <button id="btnStartPause" class="py-2 px-6 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 transition shadow-md">
+                            ▶️ Iniciar
+                        </button>
+                        <button id="btnResetTimer" class="py-2 px-6 bg-red-500 text-white font-bold rounded-full hover:bg-red-600 transition shadow-md" disabled>
+                            🔄 Reset
+                        </button>
+                    </div>
+                    <p id="timerMessage" class="mt-2 text-sm text-indigo-700 font-medium">¡Concéntrate para ganar Puntos y Minutos! (25 min)</p>
+                </div>
+                
+                <div id="categorias" class="space-y-4">
+                    </div>
+            </section>
+
+            <section id="vistaTienda" class="view" style="display:none;">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Tienda de Premios ✨</h2>
+                
+                <div id="storeMessage" class="mb-4 p-3 rounded-lg text-center transition-colors duration-300">
+                    <h3 id="storeMessageTitle" class="font-extrabold text-lg"></h3>
+                    <p id="storeMessageBody" class="text-sm"></p>
+                </div>
+                
+                <div id="contenedorPremios" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    </div>
+            </section>
+
+            <section id="vistaHorario" class="view" style="display:none;">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Horario Escolar 🏫</h2>
+                <div id="contenedorHorario" class="space-y-4">
+                    </div>
+            </section>
+            
+            <section id="vistaAgenda" class="view" style="display:none;">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Agenda y Eventos 🗓️</h2>
+                
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Próximos Eventos</h3>
+                <div id="listaEventos" class="mb-6">
+                    </div>
+                
+                <details>
+                    <summary>Añadir/Editar Evento</summary>
+                    <form id="formAgenda" class="space-y-3 p-4 bg-indigo-50 rounded-lg shadow-inner">
+                        <input type="hidden" id="agendaId" value="">
+                        
+                        <div>
+                            <label for="agendaFecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+                            <input type="date" id="agendaFecha" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                        </div>
+                        
+                        <div>
+                            <label for="agendaHora" class="block text-sm font-medium text-gray-700">Hora (Opcional)</label>
+                            <input type="time" id="agendaHora" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <div class="flex-1">
+                                <label for="agendaAsignatura" class="block text-sm font-medium text-gray-700">Asignatura/Tema</label>
+                                <input type="text" id="agendaAsignatura" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" placeholder="Ej: Matemáticas">
+                            </div>
+                            <div class="flex-1">
+                                <label for="agendaTipo" class="block text-sm font-medium text-gray-700">Tipo de Evento</label>
+                                <select id="agendaTipo" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                                    <option value="Examen">Examen</option>
+                                    <option value="Cita">Cita / Médico</option>
+                                    <option value="Entrega">Entrega de Trabajo</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="agendaComentarios" class="block text-sm font-medium text-gray-700">Comentarios</label>
+                            <textarea id="agendaComentarios" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" placeholder="Detalles..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition cursor-pointer">
+                            Guardar Evento
+                        </button>
+                    </form>
+                </details>
+            </section>
+
+            <div class="text-center mt-6">
+                <button id="btnReset" class="text-xs text-gray-400 hover:text-red-500 transition underline cursor-pointer">Reiniciar Todos los Datos (Borrar)</button>
+            </div>
+            
+        </main>
+
+        <footer class="fixed inset-x-0 bottom-0 max-w-xl mx-auto bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] rounded-t-xl z-50">
+            <div class="flex justify-around items-center p-2">
+                
+                <button id="homeBtn" class="dock-btn p-3 rounded-xl flex flex-col items-center text-gray-500 hover:text-indigo-600 active w-1/4">
+                    <span class="text-2xl">📋</span>
+                    <span class="text-xs font-medium mt-1">Tareas</span>
+                </button>
+                
+                <button id="shopBtn" class="dock-btn p-3 rounded-xl flex flex-col items-center text-gray-500 hover:text-indigo-600 w-1/4">
+                    <span class="text-2xl">🎁</span>
+                    <span class="text-xs font-medium mt-1">Tienda</span>
+                </button>
+
+                <button id="scheduleBtn" class="dock-btn p-3 rounded-xl flex flex-col items-center text-gray-500 hover:text-indigo-600 w-1/4">
+                    <span class="text-2xl">⏰</span>
+                    <span class="text-xs font-medium mt-1">Horario</span>
+                </button>
+
+                <button id="agendaBtn" class="dock-btn p-3 rounded-xl flex flex-col items-center text-gray-500 hover:text-indigo-600 w-1/4">
+                    <span class="text-2xl">📅</span>
+                    <span class="text-xs font-medium mt-1">Agenda</span>
+                </button>
+            </div>
+        </footer>
     </div>
-  );
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'daily': return renderDailyActivities();
-      case 'schedule': return renderSchedule();
-      case 'agenda': return renderAgenda();
-      case 'rewards': return renderRewards();
-      default: return renderDailyActivities();
-    }
-  };
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. CONFIGURACIÓN ---
+            // SHUKUDAI 2.6: Agenda y 4 Vistas en el Dock.
+            const META_XP = 125; 
+            
+            // Sonidos (URLs estables de Google CDN)
+            const SONIDOS = {
+                exito: new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg'),
+                nivel: new Audio('https://actions.google.com/sounds/v1/cartoon/clown_horn.ogg'),
+                error: new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'),
+                caja: new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg'),
+                // Nuevo sonido para final de Pomodoro
+                alarma: new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg') 
+            };
+            
+            // --- HORARIO SEMANAL COMPLETO ---
+            const horarioSemanal = {
+                Lunes: [
+                    { nombre: "P.E. (Educación Física)", hora: "09:00 - 09:45" },
+                    { nombre: "Religión", hora: "09:45 - 10:30" },
+                    { nombre: "Lengua", hora: "10:30 - 11:15" },
+                    { nombre: "Matemáticas", hora: "11:15 - 12:00" },
+                    { nombre: "Patio / Recreo", hora: "12:00 - 12:30" },
+                    { nombre: "Values / Ética", hora: "12:30 - 13:15" },
+                    { nombre: "English (Inglés)", hora: "13:15 - 14:00" },
+                    { nombre: "Comedor", hora: "14:00 - 15:00", tipo: "extra" }
+                ],
+                Martes: [
+                    { nombre: "Religión", hora: "09:00 - 09:45" },
+                    { nombre: "Matemáticas", hora: "09:45 - 10:30" },
+                    { nombre: "Inglés", hora: "10:30 - 11:15" },
+                    { nombre: "Lengua", hora: "11:15 - 12:00" },
+                    { nombre: "Patio / Recreo", hora: "12:00 - 12:30" },
+                    { nombre: "Ciencias Naturales", hora: "12:30 - 13:15" },
+                    { nombre: "P.E. (Educación Física)", hora: "13:15 - 14:00" },
+                    { nombre: "Comedor", hora: "14:00 - 16:00", tipo: "extra" }, 
+                    { nombre: "Karate 🥋 (Extraescolar)", hora: "16:00 - 19:00", tipo: "extra" },
+                    { nombre: "Programación 💻 (Extraescolar)", hora: "19:00 - 20:00", tipo: "extra" }
+                ],
+                Miercoles: [
+                    { nombre: "Matemáticas", hora: "09:00 - 09:45" },
+                    { nombre: "Values / Ética", hora: "09:45 - 10:30" },
+                    { nombre: "Inglés", hora: "10:30 - 11:15" },
+                    { nombre: "Arts / Plástica", hora: "11:15 - 12:00" },
+                    { nombre: "Patio / Recreo", hora: "12:00 - 12:30" },
+                    { nombre: "Ciencias Sociales", hora: "12:30 - 13:15" },
+                    { nombre: "Lengua", hora: "13:15 - 14:00" },
+                    { nombre: "Comedor", hora: "14:00 - 15:00", tipo: "extra" }
+                ],
+                Jueves: [
+                    { nombre: "Matemáticas", hora: "09:00 - 09:45" },
+                    { nombre: "Ciencias Naturales", hora: "09:45 - 10:30" },
+                    { nombre: "Ciencias Sociales", hora: "10:30 - 11:15" },
+                    { nombre: "Lengua", hora: "11:15 - 12:00" },
+                    { nombre: "Patio / Recreo", hora: "12:00 - 12:30" },
+                    { nombre: "Lengua", hora: "12:30 - 13:15" },
+                    { nombre: "Inglés", hora: "13:15 - 14:00" },
+                    { nombre: "Comedor", hora: "14:00 - 16:00", tipo: "extra" },
+                    { nombre: "Karate 🥋 (Extraescolar)", hora: "16:00 - 17:45", tipo: "extra" },
+                    { nombre: "Inglés 🇬🇧 (Extraescolar)", hora: "17:45 - 19:00", tipo: "extra" }
+                ],
+                Viernes: [
+                    { nombre: "Matemáticas", hora: "09:00 - 09:45" },
+                    { nombre: "Matemáticas", hora: "09:45 - 10:30" },
+                    { nombre: "P.E. (Educación Física)", hora: "10:30 - 11:15" },
+                    { nombre: "Música", hora: "11:15 - 12:00" },
+                    { nombre: "Patio / Recreo", hora: "12:00 - 12:30" },
+                    { nombre: "English (Inglés)", hora: "12:30 - 13:15" },
+                    { nombre: "Lengua", hora: "13:15 - 14:00" },
+                    { nombre: "Comedor", hora: "14:00 - 15:00", tipo: "extra" }
+                ]
+            };
+            
+            // --- LISTADO DE TAREAS ---
+            const catalogoTareas = [
+                {
+                    categoria: "Aseo e Higiene Personal 🧴",
+                    items: [
+                        { id: "dientes", nombre: "Lavarse bien los dientes", pts: 2, min: 5 },
+                        { id: "ducha", nombre: "Ducharse bien", pts: 2, min: 10 },
+                        { id: "desodorante", nombre: "Usar desodorante", pts: 1, min: 1 }
+                    ]
+                },
+                {
+                    categoria: "Académico 📚",
+                    items: [
+                        { id: "deberes", nombre: "Hacer deberes", pts: 1, min: 30 },
+                        { id: "estudiar", nombre: "Estudiar para controles", pts: 2, min: 45 },
+                        { id: "leer", nombre: "Leer 15 Min", pts: 5, min: 15 },
+                        { id: "repaso", nombre: "Repaso Contenidos", pts: 3, min: 20 }
+                    ]
+                },
+                {
+                    categoria: "Hogar 🏠",
+                    items: [
+                        { id: "ordenar", nombre: "Ordenar habitación", pts: 1, min: 10 },
+                        { id: "limpiar", nombre: "Limpiar habitación", pts: 2, min: 20 },
+                        { id: "lavavajillas", nombre: "Sacar lavavajillas", pts: 1, min: 5 },
+                        { id: "bano", nombre: "Limpiar baño", pts: 2, min: 15 }
+                    ]
+                },
+                {
+                    categoria: "General ⭐",
+                    items: [
+                        { id: "lenguaje", nombre: "Lenguaje Respetuoso", pts: 1, min: 0 },
+                        { id: "actitud", nombre: "Buena Actitud", pts: 1, min: 0 },
+                        { id: "colaborar", nombre: "Colabora en Labores Hogar", pts: 1, min: 15 }
+                    ]
+                }
+            ];
+            
+            // --- CATÁLOGO DE PREMIOS ---
+            const catalogoPremios = [
+                // Premios de Puntos
+                { id: 'peli', nombre: 'Noche de Cine', icono: '🎬', coste: 250, moneda: 'puntos' },
+                { id: 'helado', nombre: 'Comer Helado', icono: '🍦', coste: 120, moneda: 'puntos' },
+                { id: 'parque', nombre: 'Ir al Parque', icono: '🛝', coste: 200, moneda: 'puntos' },
+                { id: 'pizza', nombre: 'Cena Pizza', icono: '🍕', coste: 200, moneda: 'puntos' },
+                // Premios de Minutos (Tiempo de Pantalla)
+                { id: 'tablet', nombre: '30 min Tablet', icono: '📱', coste: 30, moneda: 'minutos' }, // 30 minutos
+                { id: 'consola', nombre: '1 Hora Consola', icono: '🎮', coste: 60, moneda: 'minutos' }, // 60 minutos
+                { id: 'movil', nombre: '1 Hora Móvil', icono: '🤳', coste: 60, moneda: 'minutos' }, // 60 minutos
+                { id: 'ordenador', nombre: '1 Hora Ordenador', icono: '💻', coste: 60, moneda: 'minutos' }, // 60 minutos
+            ];
+            
+            // --- 2. ESTADO Y PERSISTENCIA (USANDO LOCALSTORAGE) ---
+            let estado = JSON.parse(localStorage.getItem('shukudai_v3_data')) || {
+                puntos: 0,
+                minutos: 0,
+                nivel: 1,
+                tareasHoy: {},
+                agendaEventos: [], 
+                ultimaFecha: new Date().toDateString(),
+                ultimoDiario: null,
+                ultimoSemanal: null, // NUEVA PROPIEDAD PARA EL CONTROL SEMANAL
+            };
+            
+            // --- 3. LÓGICA DE NUEVO DÍA ---
+            const hoy = new Date().toDateString();
+            if (estado.ultimaFecha !== hoy) {
+                console.log("¡Nuevo día detectado! Reseteando tareas.");
+                estado.tareasHoy = {};
+                estado.ultimaFecha = hoy;
+                guardar();
+            }
 
-  const getTabIcon = (tab) => {
-    switch (tab) {
-      case 'daily': return Target;
-      case 'schedule': return Clock;
-      case 'agenda': return Calendar;
-      case 'rewards': return Trophy;
-      default: return Target;
-    }
-  };
+            // --- 4. REFERENCIAS DOM ---
+            const ui = {
+                puntos: document.getElementById('puntosTotales'),
+                minutos: document.getElementById('minutosTotales'),
+                nivel: document.getElementById('nivelActual'),
+                xpFill: document.getElementById('xpFill'),
+                xpTexto: document.getElementById('xpTexto'),
+                contenedorCategorias: document.getElementById('categorias'),
+                contenedorPremios: document.getElementById('contenedorPremios'),
+                contenedorHorario: document.getElementById('contenedorHorario'),
+                listaEventos: document.getElementById('listaEventos'), 
+                formAgenda: document.getElementById('formAgenda'), 
+                vistaTareas: document.getElementById('vistaTareas'),
+                vistaTienda: document.getElementById('vistaTienda'),
+                vistaHorario: document.getElementById('vistaHorario'),
+                vistaAgenda: document.getElementById('vistaAgenda'), 
+                btnHome: document.getElementById('homeBtn'),
+                btnShop: document.getElementById('shopBtn'),
+                btnSchedule: document.getElementById('scheduleBtn'),
+                btnAgenda: document.getElementById('agendaBtn'), 
+                btnReset: document.getElementById('btnReset'),
+                btnDiario: document.getElementById('btnPremioDiario'),
+                btnSemanal: document.getElementById('btnPremioSemanal')
+            };
 
-  const daysOfWeek = [
-    { value: 'monday', label: 'Lunes' },
-    { value: 'tuesday', label: 'Martes' },
-    { value: 'wednesday', label: 'Miércoles' },
-    { value: 'thursday', label: 'Jueves' },
-    { value: 'friday', label: 'Viernes' },
-    { value: 'saturday', label: 'Sábado' },
-    { value: 'sunday', label: 'Domingo' }
-  ];
+            // --- REFERENCIAS POMODORO (NUEVAS) ---
+            const uiTimer = {
+                display: document.getElementById('timerDisplay'),
+                startPause: document.getElementById('btnStartPause'),
+                reset: document.getElementById('btnResetTimer'),
+                message: document.getElementById('timerMessage')
+            };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-red-500 rounded-full animate-pulse"></div>
-        <div className="absolute top-32 right-20 w-24 h-24 bg-blue-500 rounded-full animate-bounce"></div>
-        <div className="absolute bottom-20 left-1/4 w-16 h-16 bg-yellow-500 rounded-full animate-ping"></div>
-        <div className="absolute bottom-40 right-1/3 w-20 h-20 bg-green-500 rounded-full animate-pulse"></div>
-      </div>
+            // --- 5. FUNCIONES CORE ---
+            function guardar() {
+                localStorage.setItem('shukudai_v3_data', JSON.stringify(estado));
+                actualizarUI();
+            }
 
-      {/* Header (Modificado) */}
-      <header className="relative z-10 p-4 border-b border-white/20 bg-black/30 backdrop-blur-sm">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white flex items-center">
-            <Target className="w-8 h-8 mr-2 text-yellow-400" />
-            Shukudai
-          </h1>
-          <div className="flex flex-col items-end w-40"> 
-            <LifeBar currentPoints={totalPoints} maxPoints={125} />
-          </div>
-        </div>
-      </header>
+            function actualizarUI() {
+                // Textos
+                ui.puntos.textContent = estado.puntos;
+                ui.minutos.textContent = estado.minutos;
+                ui.nivel.textContent = estado.nivel;
+                
+                // Barra XP
+                const xpRestante = estado.puntos % META_XP;
+                ui.xpFill.style.width = `${(xpRestante / META_XP) * 100}%`;
+                ui.xpTexto.textContent = `${xpRestante} / ${META_XP} xp`;
 
-      {/* Main Content */}
-      <main className="relative z-10 p-4 pb-20">
-        <div className="max-w-md mx-auto">
-          {renderContent()}
-        </div>
-      </main>
+                // Verificar Nivel
+                const nivelReal = Math.floor(estado.puntos / META_XP) + 1;
+                if (nivelReal > estado.nivel) {
+                    estado.nivel = nivelReal;
+                    lanzarConfeti();
+                    reproducir('nivel');
+                    console.log(`🎉 ¡INCREÍBLE! ¡Has subido al NIVEL ${estado.nivel}! 🎉`);
+                    guardar();
+                }
+            }
 
-      {/* Navigation Tabs */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-white/20">
-        <div className="max-w-md mx-auto flex justify-around">
-          {['daily', 'schedule', 'agenda', 'rewards'].map((tab) => {
-            const Icon = getTabIcon(tab);
-            return (
-              <motion.button
-                key={tab}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setActiveTab(tab)}
-                className={`flex flex-col items-center py-3 px-4 ${
-                  activeTab === tab ? 'text-yellow-400' : 'text-gray-400'
-                }`}
-              >
-                <Icon className="w-6 h-6 mb-1" />
-                <span className="text-xs font-medium capitalize">
-                  {tab === 'daily' ? 'Diario' : 
-                   tab === 'schedule' ? 'Horario' : 
-                   tab === 'agenda' ? 'Agenda' : 'Recompensas'}
-                </span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </nav>
+            function reproducir(tipo) {
+                if (SONIDOS[tipo]) {
+                    SONIDOS[tipo].currentTime = 0;
+                    SONIDOS[tipo].play().catch(err => console.log("Audio bloqueado:", err));
+                }
+            }
 
-      {/* Add Modal (Sin cambios) */}
-      <AnimatePresence>
-        {showAddModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowAddModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900 rounded-2xl p-6 w-full max-w-sm border border-white/20"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold text-white mb-4 text-center">
-                {modalType === 'daily' ? 'Nueva Actividad' :
-                 modalType === 'schedule' ? 'Nuevo Horario' :
-                 modalType === 'agenda' ? 'Nuevo Evento' :
-                 'Nueva Recompensa'}
-              </h2>
-              
-              {modalType === 'daily' && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Nombre de la actividad"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Puntos de recompensa"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400"
-                    value={newItem.cost}
-                    onChange={(e) => setNewItem({...newItem, cost: e.target.value})}
-                  />
-                </>
-              )}
-              
-              {modalType === 'schedule' && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Actividad"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.activity}
-                    onChange={(e) => setNewItem({...newItem, activity: e.target.value})}
-                  />
-                  <input
-                    type="time"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.time}
-                    onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  />
-                  <input
-                    type="time"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.endTime}
-                    onChange={(e) => setNewItem({...newItem, endTime: e.target.value})}
-                  />
-                  <select
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4"
-                    value={newItem.day}
-                    onChange={(e) => setNewItem({...newItem, day: e.target.value})}
-                  >
-                    <option value="" className="text-gray-800">Selecciona un día</option>
-                    {daysOfWeek.map(day => (
-                      <option key={day.value} value={day.value} className="text-gray-800">
-                        {day.label}
-                      </option>
-                    ))}
-                  </select>
-                </>
-              )}
-              
-              {modalType === 'agenda' && (
-                <>
-                  <input
-                    type="date"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.date}
-                    onChange={(e) => setNewItem({...newItem, date: e.target.value})}
-                  />
-                  <input
-                    type="time"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.time}
-                    onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  />
-                  <select
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.eventType}
-                    onChange={(e) => setNewItem({...newItem, eventType: e.target.value})}
-                  >
-                    <option value="" className="text-gray-800">Tipo de evento</option>
-                    <option value="Examen" className="text-gray-800">Examen</option>
-                    <option value="Reunión" className="text-gray-800">Reunión</option>
-                    <option value="Visita" className="text-gray-800">Visita</option>
-                    <option value="Tarea" className="text-gray-800">Tarea</option>
-                    <option value="Evento" className="text-gray-800">Evento</option>
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="Asignatura"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.subject}
-                    onChange={(e) => setNewItem({...newItem, subject: e.target.value})}
-                  />
-                  <textarea
-                    placeholder="Comentarios"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400 resize-none"
-                    rows="3"
-                    value={newItem.comments}
-                    onChange={(e) => setNewItem({...newItem, comments: e.target.value})}
-                  />
-                </>
-              )}
-              
-              {modalType === 'reward' && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Nombre de la recompensa"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Costo en puntos"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400"
-                    value={newItem.cost}
-                    onChange={(e) => setNewItem({...newItem, cost: e.target.value})}
-                  />
-                </>
-              )}
-              
-              <div className="flex space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-medium"
-                >
-                  Cancelar
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={addNewItem}
-                  className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 text-white py-2 rounded-lg font-medium"
-                >
-                  Añadir
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            function lanzarConfeti() {
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                }
+            }
+            
+            // Función para gestionar la navegación entre las 4 vistas
+            function mostrarVista(vistaId, btnActivo) {
+                const vistas = [ui.vistaTareas, ui.vistaTienda, ui.vistaHorario, ui.vistaAgenda];
+                const botones = [ui.btnHome, ui.btnShop, ui.btnSchedule, ui.btnAgenda];
 
-      {/* Edit Modal for Agenda AND Daily Activities (UNIFICADO) */}
-      <AnimatePresence>
-        {showEditModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowEditModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900 rounded-2xl p-6 w-full max-w-sm border border-white/20"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold text-white mb-4 text-center">
-                Editar {modalType === 'daily' ? 'Actividad' : 'Evento'}
-              </h2>
-              
-              {/* Contenido para Actividades Diarias */}
-              {modalType === 'daily' && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Nombre de la actividad"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Puntos de recompensa"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400"
-                    value={newItem.cost}
-                    onChange={(e) => setNewItem({...newItem, cost: e.target.value})}
-                  />
-                </>
-              )}
+                vistas.forEach(v => v.style.display = 'none');
+                botones.forEach(b => b.classList.remove('active'));
 
-              {/* Contenido para Agenda */}
-              {modalType === 'agenda' && (
-                <>
-                  <input
-                    type="date"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.date}
-                    onChange={(e) => setNewItem({...newItem, date: e.target.value})}
-                  />
-                  <input
-                    type="time"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.time}
-                    onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-                  />
-                  <select
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                    value={newItem.eventType}
-                    onChange={(e) => setNewItem({...newItem, eventType: e.target.value})}
-                  >
-                    <option value="Examen" className="text-gray-800">Examen</option>
-                    <option value="Reunión" className="text-gray-800">Reunión</option>
-                    <option value="Visita" className="text-gray-800">Visita</option>
-                    <option value="Tarea" className="text-gray-800">Tarea</option>
-                    <option value="Evento" className="text-gray-800">Evento</option>
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="Asignatura"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                    value={newItem.subject}
-                    onChange={(e) => setNewItem({...newItem, subject: e.target.value})}
-                  />
-                  <textarea
-                    placeholder="Comentarios"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400 resize-none"
-                    rows="3"
-                    value={newItem.comments}
-                    onChange={(e) => setNewItem({...newItem, comments: e.target.value})}
-                  />
-                </>
-              )}
-              
-              <div className="flex space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowEditModal(false)}
-                  className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-medium"
-                >
-                  Cancelar
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={modalType === 'daily' ? updateDailyActivity : updateEvent}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-lg font-medium"
-                >
-                  Guardar
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                document.getElementById(vistaId).style.display = 'block';
+                btnActivo.classList.add('active');
+            }
 
-      {/* Edit Modal for Schedule (Sin cambios) */}
-      <AnimatePresence>
-        {showEditScheduleModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowEditScheduleModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900 rounded-2xl p-6 w-full max-w-sm border border-white/20"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold text-white mb-4 text-center">Editar Horario</h2>
-              
-              <input
-                type="time"
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                value={newItem.time}
-                onChange={(e) => setNewItem({...newItem, time: e.target.value})}
-              />
-              <input
-                type="time"
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3"
-                value={newItem.endTime}
-                onChange={(e) => setNewItem({...newItem, endTime: e.target.value})}
-              />
-              <select
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4"
-                value={newItem.day}
-                onChange={(e) => setNewItem({...newItem, day: e.target.value})}
-              >
-                {daysOfWeek.map(day => (
-                  <option key={day.value} value={day.value} className="text-gray-800">
-                    {day.label}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="Actividad"
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400"
-                value={newItem.activity}
-                onChange={(e) => setNewItem({...newItem, activity: e.target.value})}
-              />
-              
-              <div className="flex space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowEditScheduleModal(false)}
-                  className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-medium"
-                >
-                  Cancelar
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={updateScheduleItem}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-lg font-medium"
-                >
-                  Guardar
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            // --- 6. LÓGICA POMODORO (NUEVO) ---
+            const TIEMPO_TRABAJO = 25 * 60; // 25 minutos en segundos
+            const RECOMPENSA_PTS = 5;      // Puntos por ciclo completo
+            const RECOMPENSA_MIN = 25;     // Minutos ganados por ciclo completo
+            const TIEMPO_DESCANSO = 5 * 60; // 5 minutos de descanso (opcional)
 
-      {/* Edit Modal for Rewards (Sin cambios) */}
-      <AnimatePresence>
-        {showEditRewardModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowEditRewardModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900 rounded-2xl p-6 w-full max-w-sm border border-white/20"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold text-white mb-4 text-center">Editar Recompensa</h2>
-              
-              <input
-                type="text"
-                placeholder="Nombre de la recompensa"
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-3 placeholder-gray-400"
-                value={newItem.name}
-                onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-              />
-              <input
-                type="number"
-                placeholder="Costo en puntos"
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white mb-4 placeholder-gray-400"
-                value={newItem.cost}
-                onChange={(e) => setNewItem({...newItem, cost: e.target.value})}
-              />
-              
-              <div className="flex space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowEditRewardModal(false)}
-                  className="flex-1 bg-gray-600 text-white py-2 rounded-lg font-medium"
-                >
-                  Cancelar
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={updateReward}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-lg font-medium"
-                >
-                  Guardar
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+            let timerId = null;
+            let timeLeft = TIEMPO_TRABAJO;
+            let isRunning = false;
+            let isWorkSession = true;
 
-export default App;
+            function formatTime(totalSeconds) {
+                const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+                const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+                return `${minutes}:${seconds}`;
+            }
+
+            function updateTimerDisplay() {
+                uiTimer.display.textContent = formatTime(timeLeft);
+                // Deshabilitar reset si está en 25:00 y no corriendo
+                uiTimer.reset.disabled = timeLeft === (isWorkSession ? TIEMPO_TRABAJO : TIEMPO_DESCANSO) && !isRunning;
+            }
+
+            function startTimer() {
+                if (isRunning) return;
+                isRunning = true;
+                uiTimer.startPause.innerHTML = '⏸️ Pausar';
+                uiTimer.startPause.classList.replace('bg-green-600', 'bg-yellow-600');
+                uiTimer.message.textContent = isWorkSession ? "¡Trabajando duro! Enfócate. 🧠 (25 min)" : "Descanso. ¡Relájate! ☕ (5 min)";
+                reproducir('caja'); 
+
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerId);
+                        isRunning = false;
+                        
+                        reproducir('alarma'); 
+
+                        if (isWorkSession) {
+                            // ¡RECOMPENSA POR CICLO COMPLETO!
+                            estado.puntos += RECOMPENSA_PTS;
+                            estado.minutos += RECOMPENSA_MIN;
+                            guardar();
+                            lanzarConfeti();
+                            uiTimer.message.textContent = `¡Ciclo de 25 min completado! +${RECOMPENSA_PTS} pts y +${RECOMPENSA_MIN} min. 🎉`;
+                        } else {
+                            uiTimer.message.textContent = "¡Tiempo de descanso terminado! Vuelve al trabajo. 💪";
+                        }
+
+                        // Preparar para el siguiente ciclo (Alternar Trabajo/Descanso)
+                        isWorkSession = !isWorkSession;
+                        timeLeft = isWorkSession ? TIEMPO_TRABAJO : TIEMPO_DESCANSO;
+                        uiTimer.startPause.innerHTML = isWorkSession ? '▶️ Iniciar Trabajo' : '▶️ Iniciar Descanso';
+                        uiTimer.startPause.classList.replace('bg-yellow-600', 'bg-green-600');
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+
+            function pauseTimer() {
+                if (!isRunning) return;
+                isRunning = false;
+                clearInterval(timerId);
+                uiTimer.startPause.innerHTML = '▶️ Reanudar';
+                uiTimer.startPause.classList.replace('bg-yellow-600', 'bg-green-600');
+                uiTimer.message.textContent = "Pausado. ¡No te rindas! 😉";
+            }
+
+            function resetTimer() {
+                pauseTimer();
+                timeLeft = TIEMPO_TRABAJO;
+                isWorkSession = true;
+                uiTimer.startPause.innerHTML = '▶️ Iniciar';
+                uiTimer.startPause.classList.replace('bg-yellow-600', 'bg-green-600');
+                uiTimer.message.textContent = "¡Concéntrate para ganar Puntos y Minutos! (25 min)";
+                updateTimerDisplay();
+            }
+
+            // Listeners Pomodoro (Se añaden al inicio del script)
+            uiTimer.startPause.addEventListener('click', () => isRunning ? pauseTimer() : startTimer());
+            uiTimer.reset.addEventListener('click', resetTimer);
+            // Mostrar estado inicial del timer
+            updateTimerDisplay();
+            
+            // --- 7. RENDERIZADO DE VISTAS ---
+
+            function renderizarTareas() {
+                ui.contenedorCategorias.innerHTML = '';
+                catalogoTareas.forEach(grupo => {
+                    const details = document.createElement('details');
+                    details.open = true;
+                    
+                    const summary = document.createElement('summary');
+                    summary.textContent = grupo.categoria;
+                    details.appendChild(summary);
+
+                    grupo.items.forEach(tarea => {
+                        const div = document.createElement('div');
+                        div.className = 'task';
+                        const estadoTarea = estado.tareasHoy[tarea.id];
+                        if (estadoTarea === 'hecho') div.classList.add('completed');
+                        if (estadoTarea === 'fail') div.classList.add('failed');
+
+                        div.innerHTML = `
+                            <div class="task-info">
+                                <span>${tarea.nombre}</span>
+                                <span class="task-pts">+${tarea.pts} pts ${tarea.min > 0 ? '• ' + tarea.min + ' min' : ''}</span>
+                            </div>
+                            <div class="task-buttons">
+                                ${!estadoTarea ?
+                                    `
+                                    <button class="btn-circle check" title="Completar">✔</button>
+                                    <button class="btn-circle cross" title="Fallar">✖</button>
+                                    ` : `
+                                    <span>${estadoTarea === 'hecho' ? '🌟' : '❌'}</span>
+                                `}
+                            </div>
+                        `;
+                        if (!estadoTarea) {
+                            div.querySelector('.check').addEventListener('click', () => completarTarea(tarea, true));
+                            div.querySelector('.cross').addEventListener('click', () => completarTarea(tarea, false));
+                        }
+                        details.appendChild(div);
+                    });
+                    ui.contenedorCategorias.appendChild(details);
+                });
+            }
+
+            function renderizarTienda() {
+                ui.contenedorPremios.innerHTML = '';
+                // Lógica de verificación de fin de semana para el mensaje
+                const today = new Date().getDay();
+                // 0 = Domingo, 6 = Sábado
+                const isWeekend = today === 0 || today === 6;
+
+                const messageDiv = document.getElementById('storeMessage');
+                const messageTitle = document.getElementById('storeMessageTitle');
+                const messageBody = document.getElementById('storeMessageBody');
+                if (isWeekend) {
+                    messageDiv.className = 'mb-4 p-3 bg-green-100 text-green-800 border border-green-300 rounded-lg text-center';
+                    messageTitle.textContent = '¡HOY ES FIN DE SEMANA! 🎉';
+                    messageBody.textContent = '¡Ya puedes canjear tus premios! ¡Felicidades por tu esfuerzo!';
+                } else {
+                    messageDiv.className = 'mb-4 p-3 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-lg text-center';
+                    messageTitle.textContent = 'Canje de Premios: ¡SÓLO FINES DE SEMANA! 📅';
+                    messageBody.textContent = 'Aún no es momento de canjear. Sigue acumulando puntos y minutos para el Sábado y Domingo.';
+                }
+
+
+                catalogoPremios.forEach(premio => {
+                    
+                    const monedaSimbolo = premio.moneda === 'minutos' ? 'min' : 'pts';
+                    const cantidadDisponible = premio.moneda === 'minutos' ? estado.minutos : estado.puntos;
+
+                    const puedeComprar = cantidadDisponible >= premio.coste;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'premio-card';
+                    // Opacidad reducida si no puede comprar O si no es fin de semana.
+                    card.style.opacity = (puedeComprar && isWeekend) ? '1' : '0.5';
+
+                    card.innerHTML = `
+                        <div class="premio-icono">${premio.icono}</div>
+                        <div style="font-weight:bold;">${premio.nombre}</div>
+                        <div class="price-tag">${premio.coste} ${monedaSimbolo}</div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        // Verificar si es fin de semana y si puede comprar
+                        if (!isWeekend) {
+                            reproducir('error');
+                            alert("Solo se puede canjear premios los fines de semana.");
+                            return;
+                        }
+
+                        if (!puedeComprar) {
+                            reproducir('error');
+                            const faltante = premio.coste - cantidadDisponible;
+                            alert(`Te faltan ${faltante} ${monedaSimbolo}.`); 
+                            return;
+                        }
+                        
+                        // Usamos confirm() para simular un modal
+                        if (window.confirm(`¿Comprar "${premio.nombre}" por ${premio.coste} ${monedaSimbolo}?`)) {
+                            // Lógica de DEDUCCIÓN
+                            if (premio.moneda === 'minutos') {
+                                estado.minutos -= premio.coste;
+                            } else {
+                                estado.puntos -= premio.coste;
+                            }
+
+                            reproducir('caja');
+                            lanzarConfeti(); 
+                            guardar();
+                            renderizarTienda(); 
+                        }
+                    });
+
+                    ui.contenedorPremios.appendChild(card);
+                });
+            }
+
+            function renderizarHorario() {
+                ui.contenedorHorario.innerHTML = '';
+                const dias = Object.keys(horarioSemanal);
+                
+                dias.forEach(dia => {
+                    const diaDiv = document.createElement('div');
+                    diaDiv.className = 'horario-dia';
+
+                    const titulo = document.createElement('div');
+                    titulo.className = 'dia-titulo';
+                    titulo.textContent = dia;
+                    diaDiv.appendChild(titulo);
+
+                    horarioSemanal[dia].forEach(asignatura => {
+                        const asigDiv = document.createElement('div');
+                        // Añadimos una clase condicional para extraescolares
+                        asigDiv.className = `asignatura ${asignatura.tipo === 'extra' ? 'extra-curricular' : ''}`;
+                        asigDiv.innerHTML = `
+                            <span class="asignatura-nombre">${asignatura.nombre}</span>
+                            <span class="asignatura-hora">${asignatura.hora}</span>
+                        `;
+                        diaDiv.appendChild(asigDiv);
+                    });
+
+                    ui.contenedorHorario.appendChild(diaDiv);
+                });
+            }
+
+            // --- RENDERIZADO AGENDA ---
+            function renderizarAgenda() {
+                ui.listaEventos.innerHTML = '';
+                // Ordenar eventos por fecha ascendente
+                const eventosOrdenados = [...estado.agendaEventos].sort((a, b) => 
+                    new Date(a.fecha + ' ' + (a.hora || '00:00')) - new Date(b.fecha + ' ' + (b.hora || '00:00'))
+                );
+                if (eventosOrdenados.length === 0) {
+                    ui.listaEventos.innerHTML = '<p class="text-gray-500 text-center py-4">No hay eventos próximos en la agenda.</p>';
+                    return;
+                }
+
+                eventosOrdenados.forEach(evento => {
+                    const card = document.createElement('div');
+                    // Añade una clase para estilizar según el tipo
+                    let tipoClase = evento.tipo.toLowerCase().replace(/\s/g, ''); 
+                    // Fallback si no coincide exactamente
+                    if (!['examen', 'cita', 'entrega'].includes(tipoClase)) tipoClase = 'otro';
+                    
+                    card.className = `agenda-card ${tipoClase}`;
+
+                    card.innerHTML = `
+                        <div class="agenda-title">${evento.tipo} de ${evento.asignatura}</div>
+                        <div class="agenda-info-row">
+                            <span>${new Date(evento.fecha).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+                            <span>${evento.hora || ''}</span>
+                        </div>
+                        ${evento.comentarios ? `<p class="agenda-comments">${evento.comentarios}</p>` : ''}
+                        <div class="agenda-actions">
+                            <button class="btn-edit" data-id="${evento.id}">📝 Editar</button>
+                            <button class="btn-delete" data-id="${evento.id}">🗑️ Eliminar</button>
+                        </div>
+                    `;
+                    ui.listaEventos.appendChild(card);
+                });
+
+                // Añadir listeners para editar y eliminar
+                ui.listaEventos.querySelectorAll('.btn-edit').forEach(btn => {
+                    btn.addEventListener('click', (e) => cargarEventoParaEdicion(e.target.dataset.id));
+                });
+                ui.listaEventos.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', (e) => eliminarEvento(e.target.dataset.id));
+                });
+            }
+
+            // --- LÓGICA AGENDA CRUD ---
+
+            function generarId() {
+                return '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            function cargarEventoParaEdicion(id) {
+                const evento = estado.agendaEventos.find(e => e.id === id);
+                if (!evento) return;
+
+                // Cargar datos en el formulario
+                document.getElementById('agendaId').value = evento.id;
+                document.getElementById('agendaFecha').value = evento.fecha;
+                document.getElementById('agendaHora').value = evento.hora || '';
+                document.getElementById('agendaAsignatura').value = evento.asignatura;
+                document.getElementById('agendaTipo').value = evento.tipo;
+                document.getElementById('agendaComentarios').value = evento.comentarios || '';
+                
+                // Mover la vista a la Agenda y hacer scroll al formulario
+                mostrarVista('vistaAgenda', ui.btnAgenda);
+                // Cerrar y abrir details para enfocar
+                const details = ui.formAgenda.closest('details');
+                if (details && !details.open) {
+                    details.open = true;
+                }
+                ui.formAgenda.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function guardarEvento(e) {
+                e.preventDefault();
+                const id = document.getElementById('agendaId').value;
+                const fecha = document.getElementById('agendaFecha').value;
+                const hora = document.getElementById('agendaHora').value;
+                const asignatura = document.getElementById('agendaAsignatura').value;
+                const tipo = document.getElementById('agendaTipo').value;
+                const comentarios = document.getElementById('agendaComentarios').value;
+
+                const nuevoEvento = {
+                    id: id || generarId(),
+                    fecha,
+                    hora,
+                    asignatura,
+                    tipo,
+                    comentarios
+                };
+                if (id) {
+                    // Edición: Encontrar y reemplazar el evento existente
+                    const index = estado.agendaEventos.findIndex(e => e.id === id);
+                    if (index !== -1) {
+                        estado.agendaEventos[index] = nuevoEvento;
+                        console.log('Evento actualizado con éxito. 🎉');
+                    }
+                } else {
+                    // Creación: Añadir nuevo evento
+                    estado.agendaEventos.push(nuevoEvento);
+                    console.log('Nuevo evento guardado. 🎉');
+                }
+
+                guardar();
+                ui.formAgenda.reset();
+                // Limpiar formulario
+                document.getElementById('agendaId').value = '';
+                // Resetear ID oculto
+                renderizarAgenda();
+            }
+
+            function eliminarEvento(id) {
+                if (window.confirm('¿Seguro que quieres eliminar este evento de la agenda?')) {
+                    estado.agendaEventos = estado.agendaEventos.filter(e => e.id !== id);
+                    guardar();
+                    renderizarAgenda();
+                    reproducir('error');
+                    console.log('Evento eliminado.');
+                }
+            }
+
+            // --- 8. ACCIONES DE TAREAS ---
+            function completarTarea(tarea, exito) {
+                if (exito) {
+                    estado.puntos += tarea.pts;
+                    estado.minutos += tarea.min;
+                    estado.tareasHoy[tarea.id] = 'hecho';
+                    reproducir('exito');
+                } else {
+                    estado.tareasHoy[tarea.id] = 'fail';
+                    reproducir('error');
+                }
+                guardar();
+                renderizarTareas();
+            }
+
+            // --- 9. EVENTOS GLOBALES DE NAVEGACIÓN ---
+            ui.btnHome.addEventListener('click', () => {
+                mostrarVista('vistaTareas', ui.btnHome);
+                renderizarTareas();
+            });
+            ui.btnShop.addEventListener('click', () => {
+                mostrarVista('vistaTienda', ui.btnShop);
+                renderizarTienda();
+            });
+            ui.btnSchedule.addEventListener('click', () => {
+                mostrarVista('vistaHorario', ui.btnSchedule);
+                renderizarHorario();
+            });
+            ui.btnAgenda.addEventListener('click', () => { 
+                mostrarVista('vistaAgenda', ui.btnAgenda);
+                renderizarAgenda();
+            });
+            ui.formAgenda.addEventListener('submit', guardarEvento); 
+
+            // --- 10. EVENTOS DE ACCIONES RÁPIDAS Y RESET ---
+            ui.btnDiario.addEventListener('click', () => {
+                const hoy = new Date().toDateString();
+                if (estado.ultimoDiario === hoy) {
+                    console.log("Ya has recogido el premio diario de hoy. Vuelve mañana.");
+                    reproducir('error');
+                    alert("Ya has recogido tu regalo de hoy. ¡Vuelve mañana!");
+                    return;
+                }
+
+                estado.puntos += 10;
+                estado.ultimoDiario = hoy; 
+                reproducir('exito');
+                guardar();
+                alert("¡+10 Puntos recibidos! 🎁");
+            });
+            
+            // Lógica Mejorada de Premio Semanal (NUEVO)
+            ui.btnSemanal.addEventListener('click', () => {
+                const hoy = new Date().toDateString();
+                
+                // 7 días en milisegundos
+                const unaSemana = 7 * 24 * 60 * 60 * 1000;
+                const ultimoSemanalDate = estado.ultimoSemanal ? new Date(estado.ultimoSemanal) : 0;
+                const tiempoTranscurrido = new Date().getTime() - ultimoSemanalDate.getTime();
+
+                if (tiempoTranscurrido < unaSemana) {
+                    const diasFaltantes = Math.ceil((unaSemana - tiempoTranscurrido) / (24 * 60 * 60 * 1000));
+                    console.log(`Ya has recogido el premio semanal. Vuelve en ${diasFaltantes} días.`);
+                    reproducir('error');
+                    alert(`Ya recogiste tu premio semanal. ¡Vuelve en ${diasFaltantes} días! 🏆`);
+                    return;
+                }
+
+                if(window.confirm("¿Reclamar premio semanal (+70)?")) {
+                    estado.puntos += 70;
+                    estado.ultimoSemanal = hoy; // GUARDAR LA FECHA ACTUAL
+                    reproducir('nivel');
+                    guardar();
+                    alert("¡+70 Puntos semanales recibidos! 🏆");
+                }
+            });
+
+            ui.btnReset.addEventListener('click', () => {
+                if(window.confirm("⚠️ ¿BORRAR TODO? Se perderán puntos y nivel.")) {
+                    localStorage.removeItem('shukudai_v3_data');
+                    location.reload();
+                }
+            });
+
+            // INICIO: Mostrar la vista de tareas por defecto al cargar.
+            mostrarVista('vistaTareas', ui.btnHome);
+            actualizarUI();
+        });
+    </script>
+</body>
+</html>
