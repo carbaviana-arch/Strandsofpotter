@@ -43,7 +43,6 @@ main { padding: 15px; max-width: 600px; margin: 0 auto; }
 h3 { color: var(--primary); margin: 20px 0 10px; border-left: 4px solid var(--secondary); padding-left: 10px; }
 h4 { color: var(--dark); font-size: 1.1rem; margin: 15px 0 10px; }
 
-
 section, details, .premio-card, .horario-dia, .agenda-card, .form-card {
   background: var(--white);
   border-radius: 15px;
@@ -58,7 +57,6 @@ section, details, .premio-card, .horario-dia, .agenda-card, .form-card {
 .label { display: block; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
 .big-number { font-size: 2rem; font-weight: 800; color: var(--primary); }
 .stat-box { margin: 0 5px; } 
-
 
 /* BOTONES */
 button { border: none; cursor: pointer; font-family: inherit; transition: transform 0.1s; }
@@ -175,7 +173,6 @@ details[open] summary::after { content: '▲'; }
 }
 .task-admin-actions .btn-edit { background: var(--accent); color: var(--dark); }
 .task-admin-actions .btn-delete { background: var(--danger); color: var(--white); }
-
 
 /* TIENDA */
 .premio-card {
@@ -322,13 +319,11 @@ details[open] summary::after { content: '▲'; }
   width: 100%; 
   max-width: 600px; 
   height: var(--dock-height);
-  
   background: rgba(255, 255, 255, 0.95); 
   border-radius: 20px 20px 0 0; 
   box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
   backdrop-filter: blur(5px);
   border-top: 1px solid rgba(0, 0, 0, 0.05); 
-
   display: flex; 
   justify-content: space-around; 
   align-items: center;
@@ -346,7 +341,4 @@ details[open] summary::after { content: '▲'; }
     background-color: var(--primary);
     color: var(--white);
     opacity: 1;
-}
-.dock-btn.active span {
-    filter: none; 
 }
