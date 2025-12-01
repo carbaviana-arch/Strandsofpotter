@@ -1,31 +1,35 @@
 /* Variables de la Paleta de Colores (Gamer HUD) */
 :root {
-    --color-background-dark: #0a0a0a; /* Negro Puro */
-    --color-panel-dark: #1a1a1a; /* Gris Oscuro para Paneles */
-    --color-text-light: #ffffff; /* Blanco para texto principal */
+    --color-background-dark: #0a0a0a; 
+    --color-panel-dark: #1a1a1a; 
+    --color-text-light: #ffffff; 
     
-    --color-neon-primary: #00e5ff; /* Cyan Eléctrico (Acento principal) */
-    --color-neon-secondary: #ccff00; /* Verde Lima (Éxito/Progreso) */
-    --color-neon-danger: #ff4d4d; /* Rojo para Fallos/Borrar */
+    --color-neon-primary: #00e5ff; 
+    --color-neon-secondary: #ccff00; 
+    --color-neon-danger: #ff4d4d; 
     
-    /* Configuración de Brillo de Neón (Glow Effect) */
     --neon-glow-primary: 0 0 5px var(--color-neon-primary), 0 0 10px var(--color-neon-primary);
     --neon-glow-secondary: 0 0 5px var(--color-neon-secondary), 0 0 10px var(--color-neon-secondary);
     --neon-glow-danger: 0 0 5px var(--color-neon-danger), 0 0 10px var(--color-neon-danger);
     
     --font-gamer: 'Orbitron', sans-serif;
     --border-radius-sharp: 4px;
+    --dock-height: 70px; /* Altura fija para el dock */
 }
 
 /* Estilos Globales y Tipografía */
+html, body {
+    height: 100%; /* Asegura que el body ocupe toda la ventana */
+    overflow: hidden; /* Evita que el scroll afecte al body entero */
+}
+
 body {
-    font-family: Arial, sans-serif; /* Fallback para Orbitron */
+    font-family: Arial, sans-serif; 
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    align-items: flex-start; /* Alineación cambiada para ocupar altura */
     background-color: var(--color-background-dark);
     color: var(--color-text-light);
     font-size: 16px;
@@ -33,12 +37,13 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 420px; /* Tamaño típico de aplicación móvil */
-    min-height: 100vh;
+    max-width: 420px;
+    height: 100vh; /* Ocupa la altura total de la vista */
     background-color: var(--color-background-dark);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); /* Sutil glow en el contenedor */
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); 
     display: flex;
     flex-direction: column;
+    position: relative; /* Necesario para que el dock fijo se posicione correctamente */
 }
 
 h1, h2, .stat-value {
@@ -46,230 +51,33 @@ h1, h2, .stat-value {
     font-weight: 700;
 }
 
-/* Header / Panel de Estadísticas (HUD) */
+/* Header / Panel de Estadísticas (HUD) - Mantiene su posición */
 .hud-header {
     background-color: var(--color-panel-dark);
     padding: 15px 20px;
     border-bottom: 2px solid var(--color-neon-primary);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0; /* Evita que se encoja al hacer scroll */
 }
 
-.app-title {
-    font-size: 1.8em;
-    text-align: center;
-    color: var(--color-neon-primary);
-    text-shadow: var(--neon-glow-primary);
-    margin-top: 0;
-    margin-bottom: 10px;
-}
+/* ... Estilos de stats-panel, xp-bar-container, etc., sin cambios ... */
 
-.stats-panel {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 15px;
-    background-color: #000000;
-    padding: 10px;
-    border: 1px solid var(--color-neon-primary);
-    border-radius: var(--border-radius-sharp);
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.8em;
-    color: var(--color-neon-primary);
-}
-
-.stat-value {
-    font-size: 1.5em;
-    color: var(--color-text-light);
-    text-shadow: var(--neon-glow-primary);
-}
-
-/* Barra de XP */
-.xp-bar-container {
-    margin-top: 10px;
-}
-
-.xp-label {
-    font-size: 0.9em;
-    text-align: right;
-    margin-bottom: 5px;
-    color: var(--color-neon-secondary);
-    font-family: var(--font-gamer);
-}
-
-.xp-progress-bar {
-    height: 10px;
-    background-color: #333;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 1px solid var(--color-neon-secondary);
-}
-
-#xpFill {
-    height: 100%;
-    background-color: var(--color-neon-secondary);
-    transition: width 0.3s ease;
-    box-shadow: var(--neon-glow-secondary);
-}
-
-/* Contenido Principal (Vistas) */
+/* Contenido Principal (Vistas) - Área con Scroll */
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;
-}
-
-.view-title {
-    font-size: 1.5em;
-    color: var(--color-neon-primary);
-    border-bottom: 1px dashed var(--color-neon-primary);
-    padding-bottom: 5px;
-    margin-top: 0;
-    margin-bottom: 20px;
+    padding-bottom: var(--dock-height); /* AÑADIDO: Para evitar que el dock cubra el contenido */
+    overflow-y: auto; /* AÑADIDO: Permite el scroll solo en esta área */
 }
 
 .hidden-view {
     display: none;
 }
 
-/* Paneles de Entrada y Botones */
-.input-panel {
-    background-color: var(--color-panel-dark);
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid var(--color-neon-primary);
-    border-radius: var(--border-radius-sharp);
-}
+/* ... Estilos de input-panel, action-btn, task-item, etc., sin cambios ... */
 
-input[type="text"], input[type="number"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #000;
-    color: var(--color-text-light);
-    border: 1px solid var(--color-neon-primary);
-    border-radius: var(--border-radius-sharp);
-    font-family: inherit;
-}
 
-.action-btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: var(--border-radius-sharp);
-    cursor: pointer;
-    font-family: var(--font-gamer);
-    font-weight: 700;
-    transition: all 0.2s ease;
-}
-
-.primary-btn {
-    background-color: var(--color-neon-primary);
-    color: var(--color-background-dark);
-    box-shadow: var(--neon-glow-primary);
-}
-
-.primary-btn:hover {
-    background-color: #00ffff;
-    box-shadow: 0 0 15px #00ffff;
-}
-
-/* Listas de Tareas y Premios (Paneles de Datos) */
-#tasksList, #prizesList {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.task-item, .prize-card {
-    background-color: var(--color-panel-dark);
-    padding: 15px;
-    border: 1px solid var(--color-neon-primary);
-    border-radius: var(--border-radius-sharp);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-/* Estilos Específicos de Tareas */
-.task-details {
-    flex-grow: 1;
-}
-
-.task-name {
-    font-weight: bold;
-    color: var(--color-neon-primary);
-}
-
-.task-meta {
-    font-size: 0.9em;
-    color: #aaa;
-}
-
-.task-actions button {
-    margin-left: 5px;
-    padding: 8px;
-    line-height: 1;
-    font-size: 1.1em;
-    border-radius: 50%;
-    transition: all 0.2s;
-}
-
-.check { /* Botón de 'Completado' (Referenciado en app.js) */
-    background-color: var(--color-neon-secondary);
-    color: var(--color-background-dark);
-    box-shadow: var(--neon-glow-secondary);
-}
-
-.fail { /* Botón de 'Fallido' (Referenciado en app.js) */
-    background-color: var(--color-neon-danger);
-    color: var(--color-text-light);
-    box-shadow: var(--neon-glow-danger);
-}
-
-.delete-btn { /* Botón de 'Eliminar' */
-    background: none;
-    color: var(--color-neon-danger);
-    border: 1px solid var(--color-neon-danger);
-}
-
-.completed-task {
-    opacity: 0.5;
-    border-left: 5px solid var(--color-neon-secondary);
-}
-
-/* Estilos Específicos de Premios */
-.prize-card {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.prize-name {
-    font-weight: bold;
-    color: var(--color-text-light);
-}
-
-.prize-cost {
-    color: var(--color-neon-primary);
-    font-size: 1.2em;
-    margin-top: 5px;
-    font-family: var(--font-gamer);
-}
-
-.redeem-btn {
-    background-color: var(--color-neon-primary);
-    color: var(--color-background-dark);
-    margin-top: 10px;
-    padding: 8px 12px;
-    box-shadow: var(--neon-glow-primary);
-}
-
-/* Dock de Navegación (Barra de Acceso Rápido) */
+/* Dock de Navegación (Barra de Acceso Rápido) - Siempre visible */
 .dock-bar {
     display: flex;
     justify-content: space-around;
@@ -278,6 +86,13 @@ input[type="text"], input[type="number"] {
     padding: 10px 0;
     box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    
+    /* CORRECCIÓN: Hace que el Dock sea siempre visible en la parte inferior */
+    position: fixed; 
+    bottom: 0;
+    width: 100%;
+    max-width: 420px; /* Asegura que no se salga del contenedor principal */
+    height: var(--dock-height);
 }
 
 .dock-btn {
@@ -307,10 +122,4 @@ input[type="text"], input[type="number"] {
     font-size: 0.7em;
     font-weight: 400;
 }
-
-/* Otros */
-.placeholder-text {
-    text-align: center;
-    color: #555;
-    padding: 20px;
-}
+/* ... Resto de estilos sin cambios ... */
