@@ -3,292 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shukudai GO! ⭐ - Battle Pass</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <link rel="stylesheet" href="style.css"> 
+    <title>Hoja de Personaje: Neville Longbottom</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen">
-    <div class="app-container p-4 sm:rounded-xl min-h-screen sm:min-h-0 sm:my-4">
-        
-        <header class="fortnite-header">
-            <h1 class="text-3xl font-extrabold mb-2">Shukudai GO! ⭐</h1>
-            <div id="marcador" class="stats-row mb-4">
-                <div class="stat-box">
-                    <div class="label">Puntos (Pts)</div>
-                    <div id="puntosTotales" class="big-number">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="label">Minutos (Min)</div>
-                    <div id="minutosTotales" class="big-number">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="label">Nivel</div>
-                    <div id="nivelActual" class="big-number">1</div>
+<body>
+    <div class="container">
+        <header>
+            <h1>Neville Longbottom</h1> <p><strong>Edad:</strong> 36 años | <strong>Casa:</strong> Gryffindor | <strong>Ocupación:</strong> Profesor de Herbología</p> </header>
+
+        <section class="aspects">
+            <h2>Aspectos</h2>
+            <ul>
+                <li>El hijo de la famosa familia Longbottom </li>
+                <li>Héroe de la batalla final contra Voldemort </li>
+                <li>Amistades Leales y un corazón bondadoso </li>
+                <li>Siempre tratando de encajar en una historia más grande </li>
+                <li>Miedo a repetir el miedo de sus años de colegio </li>
+            </ul>
+        </section>
+
+        <section class="stats">
+            <div class="skills">
+                <h2>Habilidades Clave</h2>
+                <p><strong>Excelente (+5):</strong> Magia y Agilidad </p>
+                <p><strong>Enorme (+4):</strong> Inteligencia y Carisma </p>
+            </div>
+
+            <div class="stunts">
+                <h2>Proezas</h2>
+                <p><strong>Valor Gryffindor (+2):</strong> Resistencia mental frente al miedo e intimidación. </p>
+            </div>
+        </section>
+
+        <section class="tracks">
+            <div class="stress-box">
+                <h3>Estrés Físico</h3> <div class="track" id="physical-stress">
+                    <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
                 </div>
             </div>
-            
-            <div id="progreso">
-                <div id="xpBar">
-                    <div id="xpFill" style="width: 0%;"></div>
+            <div class="stress-box">
+                <h3>Estrés Mental</h3> <div class="track" id="mental-stress">
+                    <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
                 </div>
-                <div id="xpTexto" class="text-xs mt-1 font-medium">0 / 125 xp</div>
             </div>
-            
-            <div id="acciones" class="flex justify-center space-x-2 mt-4">
-                <button id="btnPremioDiario" class="action-btn gold-btn shadow-sm">
-                    <i class="fa-solid fa-gift"></i> Diario (+10)
-                </button>
-                <button id="btnPremioSemanal" class="action-btn blue-btn shadow-sm">
-                    <i class="fa-solid fa-trophy"></i> Semanal (+70)
-                </button>
-            </div>
-        </header>
+        </section>
 
-        <main class="mb-20">
-            
-            <section id="vistaTareas" class="view">
-                <div class="flex justify-between items-center mb-4">
-                     <h2 class="section-title"><i class="fa-solid fa-map"></i> MISIONES DE HOY</h2>
-                     <button id="btnAdminTareas" class="action-btn btn-admin text-sm"><i class="fa-solid fa-gear"></i></button>
-                </div>
-                <div id="categorias" class="space-y-4">
-                    </div>
-            </section>
-
-            <section id="vistaTienda" class="view" style="display:none;">
-                <h2 class="section-title"><i class="fa-solid fa-box-open"></i> LOOT STORE</h2>
-                
-                <div id="storeMessage" class="mb-4 p-3 rounded-lg text-center transition-colors duration-300 prize-message-card">
-                    <h3 id="storeMessageTitle" class="font-extrabold text-lg"></h3>
-                    <p id="storeMessageBody" class="text-sm"></p>
-                </div>
-                
-                <div id="contenedorPremios" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    </div>
-            </section>
-
-            <section id="vistaHorario" class="view" style="display:none;">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="section-title"><i class="fa-solid fa-clock"></i> TIMELINE</h2>
-                    <button id="btnAdminHorario" class="action-btn btn-admin text-sm"><i class="fa-solid fa-gear"></i></button>
-                </div>
-                <div id="contenedorHorario" class="space-y-4">
-                    </div>
-            </section>
-            
-            <section id="vistaAgenda" class="view form-card" style="display:none;">
-                <h2 class="section-title"><i class="fa-solid fa-calendar-alt"></i> JOURNAL</h2>
-                
-                <h3 class="subsection-title">Próximos Eventos</h3>
-                <div id="listaEventos" class="mb-6">
-                    </div>
-                
-                <h3 class="subsection-title">Añadir Nuevo Evento/Tarea</h3>
-                <form id="formAgenda" class="space-y-4">
-                    <input type="hidden" id="agendaId">
-                    <div>
-                        <label for="agendaFecha" class="form-label">Fecha Límite</label>
-                        <input type="date" id="agendaFecha" required class="form-input">
-                    </div>
-                    <div>
-                        <label for="agendaHora" class="form-label">Hora</label>
-                        <input type="time" id="agendaHora" class="form-input">
-                    </div>
-                    <div>
-                        <label for="agendaAsignatura" class="form-label">Asunto/Asignatura</label>
-                        <input type="text" id="agendaAsignatura" required class="form-input" placeholder="Matemáticas, Proyecto, etc.">
-                    </div>
-                    <div>
-                        <label for="agendaTipo" class="form-label">Tipo de Evento</label>
-                        <select id="agendaTipo" required class="form-input">
-                            <option value="Tarea">Tarea Escolar</option>
-                            <option value="Examen">Control/Examen</option>
-                            <option value="Cita">Cita/Evento Personal</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="agendaComentarios" class="form-label">Comentarios</label>
-                        <textarea id="agendaComentarios" rows="3" class="form-input" placeholder="Detalles..."></textarea>
-                    </div>
-                    <button type="submit" class="action-btn primary-btn w-full">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evento
-                    </button>
-                </form>
-            </section>
-
-            <section id="vistaInforme" class="view" style="display:none;">
-                <h2 class="section-title"><i class="fa-solid fa-chart-bar"></i> SCOREBOARD</h2>
-                <h3 class="subsection-title">Resumen Total (Últimos 7 Días)</h3>
-                <div id="totalStats" class="grid grid-cols-2 gap-3 mb-6 stats-card-grid">
-                    <div class="stat-card"> 
-                        <div class="text-xl font-extrabold text-green-600" id="compTot">0</div>
-                        <div class="text-xs text-gray-500 font-medium">Tareas OK</div>
-                    </div>
-                    <div class="stat-card"> 
-                        <div class="text-xl font-extrabold text-red-600" id="failTot">0</div>
-                        <div class="text-xs text-gray-500 font-medium">Tareas Fallidas</div>
-                    </div>
-                    <div class="stat-card"> 
-                        <div class="text-xl font-extrabold text-indigo-600" id="ptsTot">0</div>
-                        <div class="text-xs text-gray-500 font-medium">Puntos Ganados</div>
-                    </div>
-                    <div class="stat-card"> 
-                        <div class="text-xl font-extrabold text-blue-600" id="minTot">0</div>
-                        <div class="text-xs text-gray-500 font-medium">Minutos Ganados</div>
-                    </div>
-                </div>
-                
-                <h3 class="subsection-title">Detalle Semanal (Inicio: <span id="fechaInicioSemana"></span>)</h3>
-                <div id="detalleSemanal" class="space-y-3 mb-6">
-                    </div>
-                
-                <button id="btnReset" class="action-btn danger-btn w-full">
-                    <i class="fa-solid fa-power-off"></i> Reiniciar TODO
-                </button>
-            </section>
-            
-            <section id="vistaAdminTareas" class="view form-card" style="display:none;">
-                <h2 class="section-title"><i class="fa-solid fa-list-check"></i> ADMIN: Misiones</h2>
-                <h3 class="subsection-title">Crear/Editar Misión</h3>
-                <form id="formTarea" class="space-y-4">
-                    <input type="hidden" id="tareaId">
-                    <input type="hidden" id="tareaCategoriaOriginal">
-
-                    <div>
-                        <label for="tareaNombre" class="form-label">Nombre de la Misión</label>
-                        <input type="text" id="tareaNombre" required class="form-input" placeholder="Ej: Recoger el cuarto">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="tareaPts" class="form-label">Puntos (Pts)</label>
-                            <input type="number" id="tareaPts" required class="form-input" min="1" value="1">
-                        </div>
-                        <div>
-                            <label for="tareaMin" class="form-label">Minutos (Min)</label>
-                            <input type="number" id="tareaMin" required class="form-input" min="0" value="0">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="tareaCategoria" class="form-label">Categoría</label>
-                        <input list="listaCategorias" id="tareaCategoria" required class="form-input" placeholder="Hogar, Académico, etc.">
-                        <datalist id="listaCategorias"></datalist>
-                    </div>
-
-                    <div class="flex space-x-2">
-                        <button type="submit" class="action-btn primary-btn flex-grow">
-                            <i class="fa-solid fa-save"></i> Guardar Misión
-                        </button>
-                        <button id="btnCancelarEdicion" type="button" class="action-btn secondary-btn" style="display:none;">
-                            <i class="fa-solid fa-ban"></i> Cancelar
-                        </button>
-                    </div>
-                </form>
-                
-                <h3 class="subsection-title mt-6">Misiones Existentes</h3>
-                <div id="listaTareasAdmin" class="space-y-2">
-                    </div>
-            </section>
-            
-            <section id="vistaAdminHorario" class="view form-card" style="display:none;">
-                <h2 class="section-title"><i class="fa-solid fa-calendar-week"></i> ADMIN: Horario</h2>
-                <h3 class="subsection-title">Añadir/Editar Clase/Actividad</h3>
-                <form id="formClase" class="space-y-4">
-                    <input type="hidden" id="claseId">
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="claseAsignatura" class="form-label">Asignatura</label>
-                            <input type="text" id="claseAsignatura" required class="form-input" placeholder="Ej: Matemáticas">
-                        </div>
-                        <div>
-                            <label for="claseDia" class="form-label">Día</label>
-                            <select id="claseDia" required class="form-input">
-                                <option value="Lunes">Lunes</option>
-                                <option value="Martes">Martes</option>
-                                <option value="Miercoles">Miércoles</option>
-                                <option value="Jueves">Jueves</option>
-                                <option value="Viernes">Viernes</option>
-                                <option value="Sabado">Sábado</option>
-                                <option value="Domingo">Domingo</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="claseHoraInicio" class="form-label">Hora Inicio</label>
-                            <input type="time" id="claseHoraInicio" required class="form-input">
-                        </div>
-                        <div>
-                            <label for="claseHoraFin" class="form-label">Hora Fin</label>
-                            <input type="time" id="claseHoraFin" required class="form-input">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="claseTipo" class="form-label">Tipo</label>
-                        <select id="claseTipo" class="form-input">
-                            <option value="normal">Normal (Escolar)</option>
-                            <option value="extra">Extraescolar/Comedor</option>
-                        </select>
-                    </div>
-                    
-                    <div class="flex space-x-2">
-                        <button type="submit" class="action-btn primary-btn flex-grow">
-                            <i class="fa-solid fa-save"></i> Guardar Clase
-                        </button>
-                        <button id="btnCancelarClase" type="button" class="action-btn secondary-btn" style="display:none;">
-                            <i class="fa-solid fa-ban"></i> Cancelar
-                        </button>
-                    </div>
-                </form>
-
-                <h3 class="subsection-title mt-6">Clases Existentes</h3>
-                <div id="listaHorarioAdmin" class="space-y-3">
-                    </div>
-            </section>
-            
-        </main>
-        
-        <nav id="dock" class="dock-bar">
-            <button id="homeBtn" class="dock-btn active">
-                <i class="fa-solid fa-map"></i>
-                <span class="btn-label">MISIONES</span>
-            </button>
-            
-            <button id="shopBtn" class="dock-btn">
-                <i class="fa-solid fa-box-open"></i>
-                <span class="btn-label">TIENDA</span>
-            </button>
-            
-            <button id="scheduleBtn" class="dock-btn">
-                <i class="fa-solid fa-clock"></i>
-                <span class="btn-label">HORARIO</span>
-            </button>
-            
-            <button id="agendaBtn" class="dock-btn">
-                <i class="fa-solid fa-calendar-alt"></i>
-                <span class="btn-label">AGENDA</span>
-            </button>
-
-            <button id="reportBtn" class="dock-btn">
-                <i class="fa-solid fa-chart-bar"></i>
-                <span class="btn-label">INFORME</span>
-            </button>
-        </nav>
-
+        <section class="dice-roller">
+            <button onclick="rollFate()">Lanzar Dados Fate</button>
+            <div id="dice-result"></div>
+        </section>
     </div>
-
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
