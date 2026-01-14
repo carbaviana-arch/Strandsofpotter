@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoja de Personaje: Neville Longbottom</title>
+    <title>Editor de Personaje - Strands of Fate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Neville Longbottom</h1> <p><strong>Edad:</strong> 36 años | <strong>Casa:</strong> Gryffindor | <strong>Ocupación:</strong> Profesor de Herbología</p> </header>
+            <input type="text" id="char-name" class="h1-input" value="Neville Longbottom"> <div class="header-details">
+                <label>Edad: <input type="text" id="char-age" value="36 años"></label> <label>Casa: <input type="text" id="char-house" value="Gryffindor"></label> <label>Ocupación: <input type="text" id="char-job" value="Profesor de Herbologia"></label> </div>
+        </header>
 
         <section class="aspects">
-            <h2>Aspectos</h2>
-            <ul>
-                <li>El hijo de la famosa familia Longbottom </li>
-                <li>Héroe de la batalla final contra Voldemort </li>
-                <li>Amistades Leales y un corazón bondadoso </li>
-                <li>Siempre tratando de encajar en una historia más grande </li>
-                <li>Miedo a repetir el miedo de sus años de colegio </li>
-            </ul>
+            <h2>Aspectos</h2> <div id="aspects-list">
+                <textarea class="aspect-item">El hijo de la famosa familia Longbottom</textarea> <textarea class="aspect-item">Héroe de la batalla final contra Voldemort</textarea> <textarea class="aspect-item">Amistades Leales y un corazón bondadoso</textarea> <textarea class="aspect-item">Siempre tratando de encajar en una historia más grande</textarea> <textarea class="aspect-item">Miedo a repetir el miedo de sus años de colegio</textarea> </div>
         </section>
 
         <section class="stats">
             <div class="skills">
-                <h2>Habilidades Clave</h2>
-                <p><strong>Excelente (+5):</strong> Magia y Agilidad </p>
-                <p><strong>Enorme (+4):</strong> Inteligencia y Carisma </p>
+                <h2>Habilidades</h2> <div class="skill-row">
+                    <label>Excelente (+5):</label> <input type="text" value="Magia, Agilidad"> </div>
+                <div class="skill-row">
+                    <label>Enorme (+4):</label> <input type="text" value="Inteligencia, Carisma"> </div>
             </div>
 
             <div class="stunts">
-                <h2>Proezas</h2>
-                <p><strong>Valor Gryffindor (+2):</strong> Resistencia mental frente al miedo e intimidación. </p>
-            </div>
+                <h2>Proezas</h2> <textarea class="stunt-item">Valor Gryffindor (+2): Resistencia mental frente al miedo e intimidación.</textarea> </div>
         </section>
 
         <section class="tracks">
@@ -48,10 +43,11 @@
             </div>
         </section>
 
-        <section class="dice-roller">
+        <div class="actions">
             <button onclick="rollFate()">Lanzar Dados Fate</button>
+            <button onclick="saveCharacter()" class="btn-save">Guardar Personaje</button>
             <div id="dice-result"></div>
-        </section>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
