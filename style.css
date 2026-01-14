@@ -1,400 +1,50 @@
-/* Variables de la Paleta de Colores (Fortnite Inspired) */
-:root {
-  --primary: #42A5F5; /* Azul Brillante */
-  --secondary: #CDDC39; /* Verde Neón/Lima (Progreso/Éxito) */
-  --accent: #FF9800; /* Naranja Vibrante (Acento/Acciones) */
-  --danger: #EF5350; /* Rojo Suave (Fail/Danger) */
-  --bg: #F5F5F5; /* Fondo muy claro, casi blanco */
-  --dark: #212121; /* Texto oscuro */
-  --card-bg: #FFFFFF; /* Fondo de tarjetas */
-  --dock-bg: rgba(255, 255, 255, 0.9);
-  --dock-height: 70px;
-
-  /* Fuentes */
-  --font-title: 'Luckiest Guy', cursive;
-  --font-body: 'Inter', sans-serif; /* Usamos Inter como fallback del original */
-
-  /* Efectos */
-  --shadow-lift: 0 6px 15px rgba(0, 0, 0, 0.15); /* Sombra suave para elementos que "flotan" */
-  --border-radius-xl: 16px;
-  --border-radius-l: 12px;
-}
-
-/* Base Mobile-First */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: var(--font-body);
-  background-color: var(--bg);
-  color: var(--dark);
-  padding-bottom: calc(var(--dock-height) + 15px); /* Espacio para el dock */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* LAYOUT PRINCIPAL (Mobile) */
-.app-container {
-    width: 100%;
-    margin: 0 auto;
-    background-color: var(--card-bg);
-    box-shadow: none; /* Se usará solo en desktop */
-}
-
-/* MEDIA QUERY para Desktop/Tablet */
-@media (min-width: 640px) {
-    body {
-        background: linear-gradient(135deg, var(--primary) 0%, #B3E5FC 100%); /* Fondo degradado en desktop */
-    }
-    .app-container {
-        max-width: 600px;
-        min-height: auto;
-        border-radius: var(--border-radius-xl);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra elevada para la app */
-    }
-}
-
-/* HEADER (Fortnite Battle Pass Banner) */
-.fortnite-header {
-  background: linear-gradient(90deg, var(--primary), #00BCD4); /* Degradado Azul/Cian */
-  color: white;
-  padding: 20px;
-  text-align: center;
-  border-radius: 0 0 var(--border-radius-xl) var(--border-radius-xl);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.fortnite-header h1 {
-  font-family: var(--font-title);
-  text-shadow: 2px 2px 0 var(--dark); /* Efecto 3D de título */
-  font-size: 2.2rem;
-  margin-bottom: 5px;
-}
-
-/* MARCADOR (Stats de Jugador) */
-#marcador { padding: 10px; background: rgba(0, 0, 0, 0.1); border-radius: var(--border-radius-l); }
-.stats-row { display: flex; justify-content: space-around; text-align: center; }
-.label { 
-    display: block; font-size: 0.75rem; 
-    color: #CFD8DC; /* Gris claro sobre azul */
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-}
-.big-number { 
-    font-size: 1.8rem; font-weight: 800; 
-    color: var(--secondary); /* Color acento para los números */
-    font-family: var(--font-title);
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
-}
-.stat-box { margin: 0 5px; flex-grow: 1; } 
-
-
-/* XP BAR (Barra de progreso de Nivel) */
-#progreso { padding: 0 10px; margin-top: 10px; }
-#xpBar { 
-    height: 15px; 
-    background: #E0E0E0; 
-    border-radius: 10px; 
-    margin: 5px 0; 
-    overflow: hidden; 
-    border: 2px solid var(--secondary);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-}
-#xpFill { 
-    height: 100%; 
-    width: 0%; 
-    background: linear-gradient(90deg, #9CCC65, var(--secondary)); /* Verde degradado */
-    transition: width 0.5s ease; 
-}
-#xpTexto { 
-    text-align: right; 
-    color: var(--secondary); 
-    font-weight: bold; 
-}
-
-
-/* MAIN LAYOUT */
-main { padding: 15px; max-width: 600px; margin: 0 auto; }
-
-/* TITULOS DE SECCIÓN */
-.section-title {
-    font-family: var(--font-title);
-    font-size: 1.6rem;
-    text-transform: uppercase;
-    color: var(--dark);
-    border-bottom: 3px solid var(--accent);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
+    background-color: #f4ece1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c1e1a;
     display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.subsection-title {
-    font-family: var(--font-title);
-    font-size: 1.2rem;
-    color: var(--primary);
-    margin: 20px 0 10px;
-}
-
-/* CARDS y FORMS (Estilo redondeado y con sombra) */
-section, details, .premio-card, .horario-dia, .agenda-card, .form-card, .task, .task-admin-card, .day-summary {
-  background: var(--card-bg);
-  border-radius: var(--border-radius-l);
-  box-shadow: var(--shadow-lift);
-  margin-bottom: 15px;
-  overflow: hidden;
-  border: 1px solid #ECEFF1;
-}
-
-/* BOTONES DE ACCIÓN PRINCIPALES */
-.action-btn { 
-    border: none; cursor: pointer; 
-    font-family: var(--font-title); 
-    text-transform: uppercase;
-    padding: 12px 15px;
-    border-radius: var(--border-radius-l);
-    transition: transform 0.1s, box-shadow 0.2s;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.2); /* Sombra 3D */
-    line-height: 1;
-}
-.action-btn:active { 
-    transform: translateY(2px); 
-    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-}
-
-.gold-btn { background-color: var(--accent); color: var(--dark); }
-.blue-btn { background-color: var(--primary); color: var(--white); }
-.primary-btn { background-color: var(--primary); color: var(--white); }
-.secondary-btn { background-color: #CFD8DC; color: var(--dark); }
-.danger-btn { background-color: var(--danger); color: var(--white); }
-
-.action-btn i { margin-right: 5px; }
-
-/* TAREAS (ACORDEÓN) - Estilos Fortnite */
-summary {
-    font-family: var(--font-title);
-    list-style: none; cursor: pointer; 
-    font-size: 1.125rem; 
-    font-weight: bold; 
-    padding: 0.75rem; 
-    background-color: #E3F2FD; /* Fondo azul claro */
-    border-radius: var(--border-radius-l); 
-    margin-bottom: 0.5rem; 
-    display: flex; 
-    justify-content: space-between;
-    text-transform: uppercase;
-    color: var(--primary);
-    border: 2px solid var(--primary);
-}
-details[open] summary { border-radius: var(--border-radius-l) var(--border-radius-l) 0 0; }
-summary:hover { background-color: #BBDEFB; }
-
-.task { 
-    border-top: 1px solid #eee; 
-    padding: 0.75rem; 
-}
-.task-name { color: var(--dark); font-weight: bold; }
-.task-meta { font-size: 0.8rem; color: #757575; }
-
-/* Botones de Tarea (Check/Fail) */
-.task-actions button {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    box-shadow: 0 3px 0 rgba(0,0,0,0.3); /* Sombra 3D más pequeña */
-    line-height: 1;
-    display: inline-flex;
     justify-content: center;
-    align-items: center;
-    margin-left: 8px;
-    transition: all 0.1s;
-}
-.task-actions button:active { 
-    transform: translateY(2px); 
-    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    padding: 20px;
 }
 
-.check { background-color: var(--secondary); color: var(--dark); } /* Verde Neón */
-.fail { background-color: var(--danger); color: var(--white); } /* Rojo */
-.completed-task { opacity: 0.6; border-left: 5px solid var(--secondary); background-color: #F9FBE7; }
-
-/* Premios (Loot Cards) */
-.premio-card { 
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 15px; 
-    background: #F5F5F5;
-    border: 3px solid var(--accent);
-}
-.premio-icono { font-size: 3rem; margin-bottom: 5px; }
-.redeem-btn { 
-    margin-top: 10px; 
-    background-color: var(--accent); 
-    color: var(--dark);
-    font-size: 0.85rem;
-    padding: 8px 10px;
-}
-.prize-message-card {
-    background: #FFFDE7;
-    border: 2px solid var(--accent);
-    color: var(--dark);
-    box-shadow: var(--shadow-lift);
-}
-
-/* Formularios de Administración */
-.form-label { font-weight: bold; color: var(--primary); }
-.form-input {
-    width: 100%; padding: 10px; 
-    border: 1px solid #B0BEC5; 
-    border-radius: 8px; 
-    background-color: var(--card-bg);
-    transition: border-color 0.2s;
-}
-.form-input:focus { border-color: var(--primary); outline: none; }
-
-/* --- SECCIÓN HORARIO --- */
-
-/* Resaltar día de la semana */
-.dia-titulo {
-    font-family: var(--font-title);
-    font-size: 1.25rem;
-    color: var(--card-bg); 
-    background: linear-gradient(90deg, var(--primary), #00BCD4); /* Mismo degradado del header */
-    padding: 12px 15px;
-    text-transform: uppercase;
-    font-weight: 800;
-    border-radius: var(--border-radius-l) var(--border-radius-l) 0 0;
-}
-
-/* Separar texto del borde en las clases */
-.asignatura {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 15px; 
-    border-top: 1px solid #ECEFF1;
-    transition: background-color 0.2s;
-}
-.asignatura:hover {
-    background-color: #F8F8F8;
-}
-.asignatura.extra {
-    background-color: #FFF3E0; 
-}
-.asignatura.extra:hover {
-    background-color: #FFE0B2;
-}
-.asignatura-nombre { font-weight: 600; }
-.asignatura-hora { font-size: 0.9rem; color: #757575; }
-
-/* --- SECCIÓN AGENDA --- */
-
-.agenda-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; 
-    padding: 15px 20px; /* Aumento de padding horizontal */
-    border-left: 5px solid var(--accent);
-    margin-bottom: 12px;
-}
-.agenda-info {
-    flex-grow: 1;
-    padding-right: 15px; 
-}
-.agenda-subject { font-weight: bold; color: var(--dark); margin-bottom: 5px; } 
-.agenda-date { font-size: 0.9rem; color: #757575; margin-bottom: 5px; } 
-.agenda-comments { font-size: 0.85rem; color: #444; margin-top: 5px; }
-.agenda-actions button {
-    /* Mismo estilo que botones de tarea admin */
-    width: 32px; height: 32px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    background-color: #CFD8DC;
-    margin-left: 5px;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-}
-.agenda-actions button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
-}
-
-
-/* --- SECCIÓN INFORME --- */
-#detalleSemanal .day-summary {
-    background: var(--card-bg);
-    border-left: 4px solid var(--primary); 
-    padding: 1.25rem; /* Aumento de padding */
+.container {
+    background: #fffdfa;
+    max-width: 600px;
+    border: 2px solid #8d775f;
+    padding: 30px;
+    box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.summary-header {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: 0.75rem; /* Aumento de margin-bottom */
-    border-bottom: 1px dashed #B0BEC5; 
-    padding-bottom: 0.75rem;
-}
-.summary-body {
-    display: flex;
-    justify-content: space-around;
-    font-size: 0.85rem;
-    color: #444;
-    text-align: center;
-}
-.summary-stat div { font-weight: 600; }
-
-
-/* DOCK NAVEGACIÓN (Barra de Acceso Rápido Flotante) */
-#dock {
-  position: fixed; bottom: 0; left: 0; 
-  width: 100%; 
-  height: var(--dock-height);
-  background: var(--dock-bg);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 5px;
-  border-top-left-radius: var(--border-radius-l);
-  border-top-right-radius: var(--border-radius-l);
 }
 
-@media (min-width: 640px) {
-    #dock {
-        left: 50%; 
-        transform: translateX(-50%); 
-        max-width: 600px;
-    }
+h1, h2, h3 {
+    border-bottom: 1px solid #d3c4b1;
+    color: #740001; /* Rojo Gryffindor */
 }
 
-.dock-btn {
-    background: none;
-    border: none;
+.track input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: color 0.2s, background-color 0.2s, transform 0.1s;
-    padding: 5px 0;
-    font-family: var(--font-body);
-    color: #757575; /* Iconos inactivos */
-    width: 20%;
 }
 
-.dock-btn i {
-    font-size: 1.5rem;
-    margin-bottom: 2px;
+.dice-roller {
+    margin-top: 20px;
+    text-align: center;
+    padding: 15px;
+    background: #eee;
+    border-radius: 5px;
 }
 
-.dock-btn.active, .dock-btn:hover {
-    color: var(--primary); /* Icono activo/hover */
-    transform: translateY(-2px);
-}
-
-.btn-label {
-    font-size: 0.7rem;
+button {
+    background: #ae0001;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
     font-weight: bold;
-    text-transform: uppercase;
+}
+
+button:hover {
+    background: #740001;
 }
