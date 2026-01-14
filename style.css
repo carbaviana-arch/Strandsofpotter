@@ -1,50 +1,46 @@
-body {
-    background-color: #f4ece1;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #2c1e1a;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-}
+/* ... (Mantener estilos anteriores y añadir estos) ... */
 
-.container {
-    background: #fffdfa;
-    max-width: 600px;
-    border: 2px solid #8d775f;
-    padding: 30px;
-    box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
-    border-radius: 8px;
-}
-
-h1, h2, h3 {
-    border-bottom: 1px solid #d3c4b1;
-    color: #740001; /* Rojo Gryffindor */
-}
-
-.track input[type="checkbox"] {
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-}
-
-.dice-roller {
-    margin-top: 20px;
-    text-align: center;
-    padding: 15px;
-    background: #eee;
-    border-radius: 5px;
-}
-
-button {
-    background: #ae0001;
-    color: white;
+input[type="text"], textarea {
+    background: transparent;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+    border-bottom: 1px dashed #d3c4b1;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #2c1e1a;
+    width: 100%;
+    margin-bottom: 5px;
 }
 
-button:hover {
-    background: #740001;
+.h1-input {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #740001;
+    border-bottom: 2px solid #740001;
+}
+
+.aspect-item, .stunt-item {
+    height: 40px;
+    resize: none;
+    padding: 5px;
+}
+
+.skill-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skill-row label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.btn-save {
+    background: #4A6741; /* Verde bosque para el botón de guardado */
+    margin-left: 10px;
+}
+
+.btn-save:hover {
+    background: #364d30;
 }
