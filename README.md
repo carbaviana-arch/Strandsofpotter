@@ -1,55 +1,61 @@
-🧙‍♂️ RPG Web App: Strands of Fate - Edición Familiar
-Esta es una aplicación web ligera diseñada para facilitar las partidas de rol con el sistema Strands of Fate. Permite a los jugadores visualizar sus estadísticas, gestionar el daño en tiempo real y realizar tiradas de dados automáticas.
+🪄 Strands of Fate - Hoja de Personaje Interactiva
+Este proyecto es una aplicación web diseñada para gestionar personajes de rol bajo el sistema Strands of Fate, optimizada para partidas familiares. Permite una personalización total, seguimiento de daños y persistencia de datos local.
 
-📋 Características principales
+🚀 Funcionalidades Principales
+Edición Total en Tiempo Real: Todos los campos de la ficha son editables directamente desde la interfaz.
 
-Ficha de Personaje Interactiva: Visualización clara de Identidad, Aspectos y Habilidades.
-+2
+Gestión de Imagen: Espacio para vincular una imagen del personaje mediante URL para personalización visual.
 
 
-Gestión de Estado: Control dinámico de los medidores de Estrés Físico y Estrés Mental.
+Sistema de Daño Avanzado: Incluye medidores de Estrés Físico y Mental junto con rastreadores para Consecuencias (Leve, Moderada y Grave).
 +1
 
-Lanzador de Dados Fate: Sistema integrado para calcular tiradas de 4 dados Fate (4dF).
+Autoguardado Local: Utiliza localStorage para que los datos del personaje y las notas de sesión se mantengan guardados en el navegador del usuario.
 
-Diseño Adaptable: Optimizado para leerse en móviles y tablets durante las sesiones de juego.
+Lanzador de Dados Fate (4dF): Generador de tiradas aleatorias integrado para agilizar la partida.
 
-👤 Personaje Incluido: Neville Longbottom
-La aplicación viene configurada con la ficha de Neville Longbottom, basada en los siguientes datos:
+Notas de Sesión: Espacio dedicado al final de la hoja para anotar eventos importantes de la historia.
 
-
-Identidad: Profesor de Herbología en Hogwarts, 36 años, casa Gryffindor.
-
-
-Aspectos Clave: Incluye "Héroe de la batalla final contra Voldemort" y "Amistades Leales".
+👤 Perfil del Personaje: Neville Longbottom
+La aplicación viene preconfigurada con los datos de Neville Longbottom:
 
 
-Habilidades Destacadas: Magia y Agilidad en nivel Excelente (+5).
-
-
-Proezas: Valor Gryffindor (+2) para resistencia mental.
+Identidad: Profesor de Herbología en Hogwarts , de aproximadamente 36 años y miembro de la casa Gryffindor.
 +1
 
-🚀 Instalación y Despliegue
-Para usar esta app con tu familia, sigue estos pasos:
 
-Clona o descarga este repositorio.
+Atributos Clave: Posee una Capacidad de Recuperación de 22 y una voluntad que le otorga 4 casillas de Estrés Mental.
++1
 
-Sube los archivos (index.html, style.css, script.js) a tu propio repositorio de GitHub.
+
+Aspectos Narrativos: * Hijo de la famosa familia Longbottom.
+
+Héroe de la batalla final contra Voldemort.
+
+Miedo a repetir el miedo de sus años de colegio.
+
+
+Habilidades Destacadas: * Excelente (+5): Magia y Agilidad.
+
+
+Enorme (+4): Inteligencia y Carisma.
+
+
+Proezas y Extras: Incluye Herbología Experta (+2) para el manejo de plantas mágicas y Valor Gryffindor (+2) para resistencia mental frente al miedo.
++3
+
+🛠️ Instalación y Uso
+Sube los archivos (index.html, style.css, script.js) a un repositorio de GitHub.
 
 Activa GitHub Pages:
 
 Ve a Settings > Pages.
 
-En Build and deployment, selecciona la rama main.
+Selecciona la rama main y haz clic en Save.
 
-Haz clic en Save.
+Acceso: Abre la URL proporcionada por GitHub en cualquier dispositivo (móvil, tablet o PC).
 
-¡Comparte la URL generada con tu familia!
+📝 Tecnologías
+HTML5 / CSS3: Maquetación con estilo "Pergamino" y diseño responsivo.
 
-🛠️ Tecnologías utilizadas
-HTML5: Estructura de la hoja de personaje.
-
-CSS3: Diseño con temática de pergamino mágico.
-
-JavaScript (Vanilla): Lógica para el control de estrés y algoritmos de tirada de dados.
+JavaScript (Vanilla): Lógica de dados, manejo de imágenes y persistencia de datos.
