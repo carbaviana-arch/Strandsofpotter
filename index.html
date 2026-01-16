@@ -3,49 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Personaje - Strands of Fate</title>
+    <title>Hoja de Personaje - Strands of Fate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <input type="text" id="char-name" class="h1-input" value="Neville Longbottom"> <div class="header-details">
-                <label>Edad: <input type="text" id="char-age" value="36 años"></label> <label>Casa: <input type="text" id="char-house" value="Gryffindor"></label> <label>Ocupación: <input type="text" id="char-job" value="Profesor de Herbologia"></label> </div>
+        <header class="profile-header">
+            <div class="character-image-container">
+                <img id="char-img-display" src="https://via.placeholder.com/150" alt="Avatar">
+                <input type="text" id="char-img-url" placeholder="URL de la imagen" onchange="updateImage()">
+            </div>
+            <div class="identity-info">
+                <input type="text" id="char-name" class="h1-input" value="Neville Longbottom">
+                <div class="grid-inputs">
+                    <label>Edad: <input type="text" id="char-age" value="36 años (aprox.)"></label>
+                    <label>Casa: <input type="text" id="char-house" value="Gryffindor"></label>
+                    <label>Ocupación: <input type="text" id="char-job" value="Profesor de Herbologia"></label>
+                    <label>Relación DJ: <input type="text" id="char-relation" value="Mentor o aliado"></label>
+                </div>
+                <div class="recovery-box">
+                    <label>Capacidad de Recuperación: <input type="number" id="recovery-val" value="22"></label>
+                </div>
+            </div>
         </header>
 
+        <hr>
+
         <section class="aspects">
-            <h2>Aspectos</h2> <div id="aspects-list">
-                <textarea class="aspect-item">El hijo de la famosa familia Longbottom</textarea> <textarea class="aspect-item">Héroe de la batalla final contra Voldemort</textarea> <textarea class="aspect-item">Amistades Leales y un corazón bondadoso</textarea> <textarea class="aspect-item">Siempre tratando de encajar en una historia más grande</textarea> <textarea class="aspect-item">Miedo a repetir el miedo de sus años de colegio</textarea> </div>
-        </section>
-
-        <section class="stats">
-            <div class="skills">
-                <h2>Habilidades</h2> <div class="skill-row">
-                    <label>Excelente (+5):</label> <input type="text" value="Magia, Agilidad"> </div>
-                <div class="skill-row">
-                    <label>Enorme (+4):</label> <input type="text" value="Inteligencia, Carisma"> </div>
-            </div>
-
-            <div class="stunts">
-                <h2>Proezas</h2> <textarea class="stunt-item">Valor Gryffindor (+2): Resistencia mental frente al miedo e intimidación.</textarea> </div>
-        </section>
-
-        <section class="tracks">
-            <div class="stress-box">
-                <h3>Estrés Físico</h3> <div class="track" id="physical-stress">
-                    <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
-                </div>
-            </div>
-            <div class="stress-box">
-                <h3>Estrés Mental</h3> <div class="track" id="mental-stress">
-                    <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
-                </div>
+            <h2>Aspectos</h2>
+            <div id="aspects-list">
+                <input type="text" class="aspect-input" value="El hijo de la famosa familia Longbottom">
+                <input type="text" class="aspect-input" value="Héroe de la batalla final contra Voldemort">
+                <input type="text" class="aspect-input" value="Amistades Leales y un corazón bondadoso">
+                <input type="text" class="aspect-input" value="Siempre tratando de encajar en una historia más grande">
+                <input type="text" class="aspect-input" value="Miedo a repetir el miedo de sus años de colegio">
             </div>
         </section>
 
-        <div class="actions">
-            <button onclick="rollFate()">Lanzar Dados Fate</button>
-            <button onclick="saveCharacter()" class="btn-save">Guardar Personaje</button>
+        <div class="main-stats-grid">
+            <section class="skills-ladder">
+                <h2>Escala de Habilidades</h2>
+                <div class="skill-row"><span class="rank">Excelente (+5)</span><input type="text" value="Magia, Agilidad"></div>
+                <div class="skill-row"><span class="rank">Enorme (+4)</span><input type="text" value="Inteligencia, Carisma"></div>
+                <div class="skill-row"><span class="rank">Grande (+3)</span><input type="text" value=""></div>
+                <div class="skill-row"><span class="rank">Bueno (+2)</span><input type="text" value=""></div>
+                <div class="skill-row"><span class="rank">Normal (+1)</span><input type="text" value=""></div>
+            </section>
+
+            <section class="stunts-extras">
+                <h2>Proezas y Extras</h2>
+                <textarea id="extras-herbology" placeholder="Extras (ej: Herbología Experta)">Herbología Experta (+2): Habilidad con plantas mágicas y pociones.</textarea>
+                <textarea id="proezas-text" placeholder="Proezas">Valor Gryffindor (+2): Resistencia mental frente al miedo e intimidación.</textarea>
+            </section>
+        </div>
+
+        <section class="status-tracks">
+            <div class="stress-group">
+                <h3>Estrés</h3>
+                <div class="track-row">Físico: <div class="boxes"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
+                <div class="track-row">Mental: <div class="boxes"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
+            </div>
+            <div class="consequences-group">
+                <h3>Consecuencias</h3>
+                <input type="text" placeholder="Leve (2)">
+                <input type="text" placeholder="Moderada (4)">
+                <input type="text" placeholder="Grave (6)">
+            </div>
+        </section>
+
+        <section class="session-notes">
+            <h2>Notas de la Sesión</h2>
+            <textarea id="session-notes-area" rows="6" placeholder="Anota aquí los eventos importantes de la partida..."></textarea>
+        </section>
+
+        <div class="sticky-actions">
+            <button onclick="rollFate()">🎲 Tirar Dados</button>
+            <button onclick="saveCharacter()" class="btn-save">💾 Guardar Cambios</button>
             <div id="dice-result"></div>
         </div>
     </div>
