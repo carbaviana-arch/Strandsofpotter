@@ -1,36 +1,43 @@
-// Función para lanzar dados (se mantiene igual)
+// Actualizar imagen en tiempo real
+function updateImage() {
+    const url = document.getElementById('char-img-url').value;
+    const imgDisplay = document.getElementById('char-img-display');
+    if (url) imgDisplay.src = url;
+}
+
+// Tirada de dados Fate (4dF)
 function rollFate() {
-    let results = [];
     let total = 0;
+    let icons = [];
     for (let i = 0; i < 4; i++) {
-        const roll = Math.floor(Math.random() * 3) - 1;
-        results.push(roll === 1 ? "[+]" : roll === -1 ? "[-]" : "[  ]");
-        total += roll;
+        const r = Math.floor(Math.random() * 3) - 1;
+        total += r;
+        icons.push(r === 1 ? "➕" : r === -1 ? "➖" : "⚪");
     }
     const resultDiv = document.getElementById('dice-result');
-    resultDiv.innerHTML = `<p>Dados: ${results.join(' ')} | <strong>Total: ${total > 0 ? '+' + total : total}</strong></p>`;
+    resultDiv.innerHTML = `${icons.join(' ')} | Total: <strong>${total > 0 ? '+'+total : total}</strong>`;
 }
 
-// Función para guardar los datos en el navegador
+// Guardado persistente
 function saveCharacter() {
-    const charData = {
+    const character = {
         name: document.getElementById('char-name').value,
-        age: document.getElementById('char-age').value,
-        house: document.getElementById('char-house').value,
-        job: document.getElementById('char-job').value,
-        // Aquí podrías añadir lógica para guardar todos los campos
+        image: document.getElementById('char-img-url').value,
+        notes: document.getElementById('session-notes-area').value,
+        // (Añadir aquí el resto de campos para guardado completo)
     };
-    
-    localStorage.setItem('fateCharacter', JSON.stringify(charData));
-    alert("¡Personaje guardado en este navegador!");
+    localStorage.setItem('fate_char_data', JSON.stringify(character));
+    alert("¡Ficha guardada con éxito!");
 }
 
-// Al cargar la página, podrías recuperar los datos (Opcional)
+// Cargar al iniciar
 window.onload = function() {
-    const saved = localStorage.getItem('fateCharacter');
+    const saved = localStorage.getItem('fate_char_data');
     if (saved) {
         const data = JSON.parse(saved);
-        document.getElementById('char-name').value = data.name;
-        // ... cargar el resto
+        document.getElementById('char-name').value = data.name || "Neville Longbottom";
+        document.getElementById('char-img-url').value = data.image || "";
+        document.getElementById('session-notes-area').value = data.notes || "";
+        updateImage();
     }
 };
