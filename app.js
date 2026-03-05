@@ -1,144 +1,173 @@
 let rollHistory = [];
 
-// Actualizar la vista previa de la imagen
 function updateImage() {
     const url = document.getElementById('char-img-url').value;
-    const img = document.getElementById('char-img-display');
-    if (url) img.src = url;
+    document.getElementById('char-img-display').src = url || "https://via.placeholder.com/150?text=Avatar";
 }
 
-// Puntos de Destino
 function updateFate(val) {
     const display = document.getElementById('fate-display');
-    let current = parseInt(display.innerText);
-    display.innerText = Math.max(0, current + val);
+    display.innerText = Math.max(0, parseInt(display.innerText) + val);
     saveToLocalStorage();
 }
 
-// LÓGICA DE TIRADA Y HISTORIAL
+// GESTIÓN DE HABILIDADES Y PRESUPUESTO
+function updateSkillBudget() {
+    const recovery = parseInt(document.getElementById('recovery-val').value) || 0;
+    const skills = document.querySelectorAll('.skill-val-input');
+    let spent = 0;
+    skills.forEach(s => spent += (parseInt(s.value) || 0));
+    
+    const budgetSpan = document.getElementById('skill-budget');
+    budgetSpan.innerText = recovery - spent;
+    budgetSpan.style.color = (recovery - spent) < 0 ? "red" : "var(--blood)";
+    updateSkillSelector();
+}
+
+function addSkill(name = '', val = 0) {
+    const container = document.getElementById('skills-dynamic-list');
+    const div = document.createElement('div');
+    div.className = 'skill-item';
+    div.innerHTML = `
+        <input type="text" class="skill-name-input" placeholder="Habilidad" value="${name}" oninput="updateSkillSelector()">
+        <input type="number" class="skill-val-input" value="${val}" min="0" max="5" oninput="updateSkillBudget()">
+        <button onclick="this.parentElement.remove(); updateSkillBudget(); saveToLocalStorage();">×</button>
+    `;
+    container.appendChild(div);
+    saveToLocalStorage();
+}
+
+function updateSkillSelector() {
+    const selector = document.getElementById('skill-selector');
+    selector.innerHTML = '<option value="0">Tirada Simple (+0)</option>';
+    const names = document.querySelectorAll('.skill-name-input');
+    const vals = document.querySelectorAll('.skill-val-input');
+    names.forEach((n, i) => {
+        if(n.value) {
+            const opt = document.createElement('option');
+            opt.value = vals[i].value;
+            opt.text = `${n.value} (+${vals[i].value})`;
+            selector.add(opt);
+        }
+    });
+}
+
+// TIRADAS
 function executeSelectedRoll() {
     const selector = document.getElementById('skill-selector');
     const bonus = parseInt(selector.value);
     const skillName = selector.options[selector.selectedIndex].text;
     
-    let rolls = [];
     let sum = 0;
-    for (let i = 0; i < 4; i++) {
-        let r = Math.floor(Math.random() * 3) - 1; 
+    let dice = [];
+    for(let i=0; i<4; i++) {
+        let r = Math.floor(Math.random() * 3) - 1;
         sum += r;
-        rolls.push(r === 1 ? '[+]' : r === -1 ? '[-]' : '[  ]');
+        dice.push(r === 1 ? '[+]' : r === -1 ? '[-]' : '[  ]');
     }
+    
     const final = sum + bonus;
+    const resBox = document.getElementById('dice-result-v2');
+    resBox.innerHTML = `<div class="dice-display">${dice.join(' ')}</div><div class="final-score">${final > 0 ? '+'+final : final}</div>`;
     
-    // Visualización en el cuadro principal
-    const resultDiv = document.getElementById('dice-result-v2');
-    resultDiv.classList.remove('roll-animation');
-    void resultDiv.offsetWidth; 
-    resultDiv.classList.add('roll-animation');
-
-    resultDiv.innerHTML = `
-        <div class="dice-display">${rolls.join(' ')}</div>
-        <div class="final-score">${final > 0 ? '+' + final : final}</div>
-        <div class="roll-details">Total: Dados (${sum}) + Bono (${bonus})</div>
-    `;
-
-    // Añadir al historial (Max 5)
-    addToHistory(skillName, final);
+    const hist = document.getElementById('roll-history');
+    rollHistory.unshift(`<li>${skillName}: <strong>${final}</strong></li>`);
+    if(rollHistory.length > 5) rollHistory.pop();
+    hist.innerHTML = rollHistory.join('');
+    saveToLocalStorage();
 }
 
-function addToHistory(skill, total) {
-    const historyList = document.getElementById('roll-history');
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    rollHistory.unshift(`<li><strong>${timestamp}</strong> - ${skill}: <span>${total > 0 ? '+' + total : total}</span></li>`);
-    if (rollHistory.length > 5) rollHistory.pop();
-    
-    historyList.innerHTML = rollHistory.join('');
-}
-
-// GESTIÓN DE INVENTARIO
-function addItem(name = '', desc = '', mod = 0) {
+// INVENTARIO
+function addItem(name='', desc='', mod=0) {
     const container = document.getElementById('items-list');
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'magic-item';
-    itemDiv.innerHTML = `
+    const div = document.createElement('div');
+    div.className = 'magic-item';
+    div.innerHTML = `
         <div class="item-row">
-            <input type="text" class="item-name" placeholder="Objeto" value="${name}">
-            <input type="number" class="item-mod" placeholder="Mod" value="${mod}">
-            <button onclick="this.parentElement.parentElement.remove(); saveToLocalStorage();" class="btn-delete">×</button>
+            <input type="text" class="i-name" placeholder="Item" value="${name}">
+            <input type="number" class="i-mod" value="${mod}">
+            <button onclick="this.parentElement.parentElement.remove(); saveToLocalStorage();">×</button>
         </div>
-        <textarea class="item-desc" placeholder="Descripción...">${desc}</textarea>
+        <input type="text" class="i-desc" placeholder="Efecto..." value="${desc}">
     `;
-    container.appendChild(itemDiv);
-    itemDiv.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', saveToLocalStorage));
+    container.appendChild(div);
+    saveToLocalStorage();
 }
 
 // PERSISTENCIA
 function saveToLocalStorage() {
     const data = {
         name: document.getElementById('char-name').value,
-        age: document.getElementById('char-age').value,
-        concept: document.getElementById('char-concept').value,
-        job: document.getElementById('char-job').value,
         recovery: document.getElementById('recovery-val').value,
-        imgUrl: document.getElementById('char-img-url').value,
         fate: document.getElementById('fate-display').innerText,
-        aspects: Array.from(document.querySelectorAll('.aspect-input')).map(t => t.value),
-        notes: document.getElementById('notes-area').value,
-        items: Array.from(document.querySelectorAll('.magic-item')).map(item => ({
-            name: item.querySelector('.item-name').value,
-            mod: item.querySelector('.item-mod').value,
-            desc: item.querySelector('.item-desc').value
-        }))
+        stunts: document.getElementById('stunts-area').value,
+        aspects: Array.from(document.querySelectorAll('.aspect-input')).map(a => a.value),
+        skills: Array.from(document.querySelectorAll('.skill-item')).map(s => ({
+            n: s.querySelector('.skill-name-input').value,
+            v: s.querySelector('.skill-val-input').value
+        })),
+        items: Array.from(document.querySelectorAll('.magic-item')).map(i => ({
+            n: i.querySelector('.i-name').value,
+            m: i.querySelector('.i-mod').value,
+            d: i.querySelector('.i-desc').value
+        })),
+        cons: Array.from(document.querySelectorAll('.consequences-list input')).map(c => c.value),
+        notes: document.getElementById('notes-area') ? document.getElementById('notes-area').value : ""
     };
-    localStorage.setItem('strands_v2_data', JSON.stringify(data));
+    localStorage.setItem('strands_arcana_data', JSON.stringify(data));
 }
 
 function loadFromLocalStorage() {
-    const saved = localStorage.getItem('strands_v2_data');
+    const saved = localStorage.getItem('strands_arcana_data');
     if(!saved) return;
-    const data = JSON.parse(saved);
+    const d = JSON.parse(saved);
     
-    document.getElementById('char-name').value = data.name || "";
-    document.getElementById('char-age').value = data.age || "";
-    document.getElementById('char-concept').value = data.concept || "";
-    document.getElementById('char-job').value = data.job || "";
-    document.getElementById('recovery-val').value = data.recovery || "";
-    document.getElementById('char-img-url').value = data.imgUrl || "";
-    document.getElementById('fate-display').innerText = data.fate || "3";
-    document.getElementById('notes-area').value = data.notes || "";
+    document.getElementById('char-name').value = d.name || "";
+    document.getElementById('recovery-val').value = d.recovery || 0;
+    document.getElementById('fate-display').innerText = d.fate || 3;
+    document.getElementById('stunts-area').value = d.stunts || "";
+    
+    if(d.aspects) d.aspects.forEach((val, i) => { 
+        const el = document.querySelectorAll('.aspect-input')[i];
+        if(el) el.value = val;
+    });
 
-    const aspects = document.querySelectorAll('.aspect-input');
-    if(data.aspects) data.aspects.forEach((v, i) => { if(aspects[i]) aspects[i].value = v; });
+    const skillCont = document.getElementById('skills-dynamic-list');
+    skillCont.innerHTML = "";
+    if(d.skills) d.skills.forEach(s => addSkill(s.n, s.v));
 
-    if(data.items) {
-        document.getElementById('items-list').innerHTML = "";
-        data.items.forEach(item => addItem(item.name, item.desc, item.mod));
-    }
-    updateImage();
-}
+    const itemCont = document.getElementById('items-list');
+    itemCont.innerHTML = "";
+    if(d.items) d.items.forEach(i => addItem(i.n, i.d, i.m));
 
-// EXPORTAR / IMPORTAR
-function exportCharacter() {
-    saveToLocalStorage();
-    const data = localStorage.getItem('strands_v2_data');
-    const blob = new Blob([data], {type : 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `Ficha_${document.getElementById('char-name').value || 'Personaje'}.json`;
-    a.click();
-}
+    if(d.cons) d.cons.forEach((val, i) => {
+        const el = document.querySelectorAll('.consequences-list input')[i];
+        if(el) el.value = val;
+    });
 
-function importCharacter(event) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        localStorage.setItem('strands_v2_data', e.target.result);
-        loadFromLocalStorage();
-    };
-    reader.readAsText(event.target.files[0]);
+    updateSkillBudget();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     loadFromLocalStorage();
     document.body.addEventListener('input', saveToLocalStorage);
 });
+
+// EXPORT/IMPORT
+function exportCharacter() {
+    const data = localStorage.getItem('strands_arcana_data');
+    const blob = new Blob([data], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Personaje_Arcana.json`;
+    a.click();
+}
+
+function importCharacter(e) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        localStorage.setItem('strands_arcana_data', event.target.result);
+        loadFromLocalStorage();
+    };
+    reader.readAsText(e.target.files[0]);
+}
