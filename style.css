@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=MedievalSharp&family=Mrs+Saint+Delafield&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=MedievalSharp&display=swap');
 
 :root {
     --ink: #1a120f;
@@ -11,108 +11,81 @@
 body {
     background-color: #0d0d0d;
     background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
-    display: flex;
-    justify-content: center;
-    padding: 40px 10px;
-    margin: 0;
+    display: flex; justify-content: center; padding: 40px 10px; margin: 0;
+    font-family: 'Crimson Pro', serif;
 }
 
 .parchment-container {
     background: #f4e4bc url('https://www.transparenttextures.com/patterns/old-paper.png');
-    max-width: 950px;
-    width: 100%;
-    padding: 60px;
-    position: relative;
-    border-radius: 2px;
-    box-shadow: 
-        0 0 100px rgba(0,0,0,0.8),
-        inset 0 0 100px rgba(139, 69, 19, 0.2);
-    /* Borde quemado y desgastado */
-    border: 1px solid #d2b48c;
+    max-width: 950px; width: 100%; padding: 50px;
+    box-shadow: 0 0 80px rgba(0,0,0,0.9), inset 0 0 100px rgba(139, 69, 19, 0.1);
+    border: 1px solid #d2b48c; position: relative;
 }
 
-/* Decoración de esquinas */
-.parchment-container::before {
-    content: "🧙‍♂️";
-    position: absolute;
-    top: 20px; right: 20px;
-    opacity: 0.2; font-size: 2rem;
-}
-
-h2 {
-    font-family: 'MedievalSharp', cursive;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-bottom: 1px double var(--gold);
-    color: var(--ink);
-    margin-top: 0;
-    font-size: 1.2rem;
-}
-
-/* Campos de entrada estilo "escrito a mano" */
-input[type="text"], input[type="number"], textarea {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(26, 18, 15, 0.2);
-    font-family: 'Crimson Pro', serif;
-    color: var(--ink);
-    font-size: 1.1rem;
-}
-
-input:focus {
-    outline: none;
-    border-bottom-color: var(--blood);
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Botones estilo Sello de Cera */
-button {
-    background: var(--blood);
-    color: var(--parchment);
-    border: 1px solid var(--ink);
-    font-family: 'MedievalSharp';
-    text-transform: uppercase;
-    padding: 8px 15px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    transition: all 0.2s;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    background: #800000;
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-}
-
-/* Altar de Tiradas - Enfoque Místico */
-.roll-altar {
-    background: rgba(45, 74, 83, 0.05);
-    border: 2px solid var(--magic-blue);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: inset 0 0 20px rgba(45, 74, 83, 0.1);
-}
-
-.result-box {
-    background: rgba(255, 255, 255, 0.6) !important;
-    border-radius: 50% / 10%; /* Forma ovalada sutil */
-    border: 1px solid var(--gold) !important;
-}
-
-.final-score {
-    font-size: 4rem !important;
-    text-shadow: 2px 2px 0px var(--parchment), 4px 4px 0px rgba(0,0,0,0.1);
-}
-
-/* Avatar circular tipo camafeo */
-.avatar-frame img {
-    border-radius: 50%;
-    border: 5px solid var(--ink);
-    padding: 5px;
-    background: var(--gold);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
+/* NAVBAR ESTILO METAL */
 .magical-toolbar {
-    background: var(--ink);
-    border-bottom: 3px solid var(--gold);
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--ink); color: var(--parchment);
+    padding: 10px 20px; border-radius: 4px; border-bottom: 3px solid var(--gold);
+    margin-bottom: 30px;
 }
+
+button {
+    background: var(--blood); color: var(--parchment);
+    border: 1px solid var(--gold); font-family: 'MedievalSharp';
+    padding: 5px 15px; cursor: pointer; transition: 0.2s;
+}
+button:hover { background: #800000; transform: translateY(-1px); }
+
+/* HEADER */
+.character-header { display: flex; gap: 30px; margin-bottom: 40px; align-items: center; }
+.avatar-frame img {
+    width: 140px; height: 140px; border-radius: 50%;
+    border: 4px solid var(--ink); background: var(--gold); padding: 4px;
+}
+.identity-fields { flex: 1; }
+.name-input {
+    font-size: 2.5rem; font-family: 'MedievalSharp'; width: 100%;
+    border: none; border-bottom: 2px solid var(--blood); background: transparent;
+}
+.sub-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+
+/* SECCIONES */
+.main-content { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; }
+h2 { font-family: 'MedievalSharp'; border-bottom: 1px double var(--gold); color: var(--blood); letter-spacing: 1px; }
+
+/* HABILIDADES DYNAMIC */
+.skill-item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+.skill-name-input { flex: 2; font-weight: bold; }
+.skill-val-input { width: 50px; text-align: center; font-weight: bold; }
+.budget-badge { font-family: 'MedievalSharp'; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px; }
+.budget-negative { color: var(--blood); font-weight: bold; }
+
+/* ALTAR DE TIRADAS */
+.roll-altar {
+    background: rgba(45, 74, 83, 0.05); border: 1px solid var(--magic-blue);
+    padding: 20px; border-radius: 10px; text-align: center;
+}
+.result-box {
+    background: rgba(255,255,255,0.5); min-height: 120px; margin: 15px 0;
+    border: 1px solid var(--gold); display: flex; flex-direction: column; justify-content: center;
+}
+.final-score { font-size: 3.5rem; font-family: 'MedievalSharp'; color: var(--ink); }
+.dice-display { letter-spacing: 8px; font-weight: bold; opacity: 0.7; }
+.history-list { list-style: none; padding: 0; font-size: 0.85rem; text-align: left; }
+.history-list li { border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px 0; }
+
+/* OBJETOS */
+.magic-item-card { border: 1px dashed var(--gold); padding: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.2); }
+.item-header { display: flex; gap: 5px; }
+.i-name { font-weight: bold; }
+.i-mod { width: 40px; }
+.i-desc { font-style: italic; font-size: 0.9rem; margin-top: 5px; }
+
+/* INPUTS GENERAL */
+input, textarea { background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 5px; font-family: inherit; }
+input:focus { background: rgba(255,255,255,0.3); outline: none; }
+.stunt-input { width: 100%; height: 80px; border: 1px solid var(--gold); margin-top: 10px; }
+
+@keyframes shake { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+.roll-anim { animation: shake 0.2s ease-in-out; }
