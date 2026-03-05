@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strands of Fate 2.0 - Pergamino de Personaje</title>
+    <title>Strands of Fate 2.0 - Pergamino Mágico</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -55,28 +55,34 @@
 
                 <section class="box-section">
                     <h2>Inventario Mágico</h2>
-                    <div id="items-list">
-                        </div>
+                    <div id="items-list"></div>
                     <button onclick="addItem()" class="btn-add-item">+ Agregar Objeto</button>
                 </section>
             </aside>
 
             <main class="right-column">
-                <section class="box-section">
-                    <h2>Habilidades (Tiradas)</h2>
-                    <div class="skill-ladder">
-                        <div class="skill-row"><button onclick="rollWithSkill(5)">+5</button><input type="text" placeholder="Excelente"></div>
-                        <div class="skill-row"><button onclick="rollWithSkill(4)">+4</button><input type="text" placeholder="Enorme"></div>
-                        <div class="skill-row"><button onclick="rollWithSkill(3)">+3</button><input type="text" placeholder="Grande"></div>
-                        <div class="skill-row"><button onclick="rollWithSkill(2)">+2</button><input type="text" placeholder="Bueno"></div>
-                        <div class="skill-row"><button onclick="rollWithSkill(1)">+1</button><input type="text" placeholder="Normal"></div>
+                <section class="box-section roll-altar">
+                    <h2>Altar de Tiradas</h2>
+                    <div class="roll-controls">
+                        <select id="skill-selector">
+                            <option value="5">Excelente (+5)</option>
+                            <option value="4">Enorme (+4)</option>
+                            <option value="3">Grande (+3)</option>
+                            <option value="2">Bueno (+2)</option>
+                            <option value="1">Normal (+1)</option>
+                            <option value="0">Mediocre (+0)</option>
+                        </select>
+                        <button id="main-roll-btn" onclick="executeSelectedRoll()">✨ Lanzar</button>
                     </div>
-                </section>
+                    
+                    <div id="dice-result-v2" class="result-box">
+                        <p class="placeholder-text">El destino espera...</p>
+                    </div>
 
-                <section id="dice-overlay" class="box-section">
-                    <h2>Resultado de la Tirada</h2>
-                    <div id="dice-result">
-                        <p>Haz clic en una habilidad para lanzar...</p>
+                    <div class="history-container">
+                        <h3>Últimas Crónicas</h3>
+                        <ul id="roll-history">
+                            </ul>
                     </div>
                 </section>
 
@@ -85,13 +91,13 @@
                     <div class="stress-track">
                         <span>Estrés Físico:</span>
                         <div class="checkbox-group">
-                            <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()">
+                            <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
                         </div>
                     </div>
                     <div class="stress-track">
                         <span>Estrés Mental:</span>
                         <div class="checkbox-group">
-                            <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()">
+                            <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
                         </div>
                     </div>
                 </section>
@@ -99,9 +105,9 @@
         </div>
 
         <section class="box-section">
-            <h2>Crónicas y Notas</h2>
-            <textarea id="notes-area" rows="6" placeholder="Escribe aquí tus proezas y notas de sesión..."></textarea>
-            <textarea id="stunts-text" style="display:none;"></textarea> </section>
+            <h2>Notas de Sesión</h2>
+            <textarea id="notes-area" rows="6" placeholder="Escribe aquí tus proezas..."></textarea>
+        </section>
     </div>
     <script src="app.js"></script>
 </body>
