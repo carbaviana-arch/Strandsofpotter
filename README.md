@@ -1,18 +1,17 @@
-# 🧙‍♂️ Strands of Fate - Web Character Sheet
+# 🧙‍♂️ Strands of Fate 2.0 - Web Character Sheet
 
-Aplicación web inmersiva para jugar rol con el sistema **Strands of Fate**. Diseñada con estética de pergamino para campañas de fantasía o magia.
+Nueva versión evolucionada del pergamino interactivo para rol. Diseñada para ser inmersiva, rápida y persistente.
 
-## 🌟 Características
-- **Editable y Genérica:** Crea cualquier personaje desde cero.
-- **Importar/Exportar:** Guarda tus personajes en archivos `.json` en tu ordenador y cárgalos en cualquier momento.
-- **Tiradas Fate Integradas:** Haz clic en los bonos de habilidad (+5 a +1) para lanzar 4 dados Fate automáticamente.
-- **Persistencia de Imagen:** Vincula avatares mediante URL.
-- **Diseño Responsive:** Úsalo en tablets o PC durante tus sesiones.
+## 🌟 Novedades de la Versión 2.0
+- **Inventario Mágico Dinámico:** Agrega objetos (varitas, pociones, escobas) con nombre, descripción y modificador numérico.
+- **Auto-guardado Inteligente (LocalStorage):** No pierdas tus cambios. La ficha se guarda en tu navegador automáticamente mientras escribes.
+- **Sistema de Dados Fate Visual:** Tiradas de 4dF con visualización de símbolos `[+]`, `[-]` y cálculo de total automático.
+- **Gestión de Archivos:** Exportación e importación en formato JSON mejorada para incluir el inventario.
 
-## 🚀 Cómo usar
-1. Sube estos archivos a un repositorio de GitHub.
-2. Ve a **Settings > Pages** y activa el despliegue desde la rama `main`.
-3. ¡Comparte el link con tu familia!
+## 🚀 Instalación rápida
+1. Sube `index.html`, `style.css` y `app.js` a tu repo de GitHub.
+2. Activa **GitHub Pages** en la configuración del repositorio.
+3. ¡Accede a tu pergamino desde cualquier dispositivo!
 
 ## 📜 Créditos
-Desarrollado para partidas de rol familiares épicas.
+Creado por el equipo de **Strands of Potter** para llevar la magia a las mesas de rol familiares.
