@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strands of Fate - Pergamino de Personaje</title>
+    <title>Strands of Fate 2.0 - Pergamino de Personaje</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,7 +33,7 @@
                 <input type="text" id="char-name" class="name-input" placeholder="Nombre del Héroe/Heroína">
                 <div class="sub-fields">
                     <input type="text" id="char-age" placeholder="Edad / Origen">
-                    <input type="text" id="char-concept" placeholder="Concepto Principal (ej. Mago de Sangre)">
+                    <input type="text" id="char-concept" placeholder="Concepto Principal">
                     <input type="text" id="char-job" placeholder="Ocupación / Rango">
                     <input type="number" id="recovery-val" placeholder="Recuperación">
                 </div>
@@ -54,8 +54,10 @@
                 </section>
 
                 <section class="box-section">
-                    <h2>Proezas y Extras</h2>
-                    <textarea id="stunts-text" rows="8" placeholder="Escribe aquí tus habilidades especiales, magias y equipo..."></textarea>
+                    <h2>Inventario Mágico</h2>
+                    <div id="items-list">
+                        </div>
+                    <button onclick="addItem()" class="btn-add-item">+ Agregar Objeto</button>
                 </section>
             </aside>
 
@@ -71,28 +73,36 @@
                     </div>
                 </section>
 
+                <section id="dice-overlay" class="box-section">
+                    <h2>Resultado de la Tirada</h2>
+                    <div id="dice-result">
+                        <p>Haz clic en una habilidad para lanzar...</p>
+                    </div>
+                </section>
+
                 <section class="box-section status-tracks">
                     <h2>Estado y Daño</h2>
                     <div class="stress-track">
                         <span>Estrés Físico:</span>
                         <div class="checkbox-group">
-                            <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
+                            <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()">
                         </div>
                     </div>
                     <div class="stress-track">
                         <span>Estrés Mental:</span>
                         <div class="checkbox-group">
-                            <input type="checkbox"> <input type="checkbox"> <input type="checkbox"> <input type="checkbox">
+                            <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()"> <input type="checkbox" onchange="saveToLocalStorage()">
                         </div>
-                    </div>
-                    <div class="consequences">
-                        <input type="text" placeholder="Leve (2)">
-                        <input type="text" placeholder="Moderada (4)">
-                        <input type="text" placeholder="Grave (6)">
                     </div>
                 </section>
             </main>
         </div>
 
-        <section class="session-notes">
-            <h2>Crónicas
+        <section class="box-section">
+            <h2>Crónicas y Notas</h2>
+            <textarea id="notes-area" rows="6" placeholder="Escribe aquí tus proezas y notas de sesión..."></textarea>
+            <textarea id="stunts-text" style="display:none;"></textarea> </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
