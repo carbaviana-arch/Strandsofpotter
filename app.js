@@ -1,3 +1,5 @@
+let rollHistory = [];
+
 // Actualizar la vista previa de la imagen
 function updateImage() {
     const url = document.getElementById('char-img-url').value;
@@ -13,30 +15,48 @@ function updateFate(val) {
     saveToLocalStorage();
 }
 
-// Lógica de Dados Fate (4dF) con estilo visual
-function rollWithSkill(bonus) {
+// LÓGICA DE TIRADA Y HISTORIAL
+function executeSelectedRoll() {
+    const selector = document.getElementById('skill-selector');
+    const bonus = parseInt(selector.value);
+    const skillName = selector.options[selector.selectedIndex].text;
+    
     let rolls = [];
     let sum = 0;
     for (let i = 0; i < 4; i++) {
         let r = Math.floor(Math.random() * 3) - 1; 
         sum += r;
-        let symbol = r === 1 ? '<span class="dice-plus">[+]</span>' : 
-                     r === -1 ? '<span class="dice-minus">[-]</span>' : 
-                     '<span class="dice-empty">[  ]</span>';
-        rolls.push(symbol);
+        rolls.push(r === 1 ? '[+]' : r === -1 ? '[-]' : '[  ]');
     }
     const final = sum + bonus;
-    const resultDiv = document.getElementById('dice-result');
+    
+    // Visualización en el cuadro principal
+    const resultDiv = document.getElementById('dice-result-v2');
+    resultDiv.classList.remove('roll-animation');
+    void resultDiv.offsetWidth; 
+    resultDiv.classList.add('roll-animation');
+
     resultDiv.innerHTML = `
-        <div class="dice-roll-container">
-            <div class="dice-individual">${rolls.join(' ')}</div>
-            <div class="total-result">Total: <strong>${final > 0 ? '+' + final : final}</strong></div>
-            <small>(Dados: ${sum} + Bono: ${bonus})</small>
-        </div>
+        <div class="dice-display">${rolls.join(' ')}</div>
+        <div class="final-score">${final > 0 ? '+' + final : final}</div>
+        <div class="roll-details">Total: Dados (${sum}) + Bono (${bonus})</div>
     `;
+
+    // Añadir al historial (Max 5)
+    addToHistory(skillName, final);
 }
 
-// Gestión de Inventario
+function addToHistory(skill, total) {
+    const historyList = document.getElementById('roll-history');
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    rollHistory.unshift(`<li><strong>${timestamp}</strong> - ${skill}: <span>${total > 0 ? '+' + total : total}</span></li>`);
+    if (rollHistory.length > 5) rollHistory.pop();
+    
+    historyList.innerHTML = rollHistory.join('');
+}
+
+// GESTIÓN DE INVENTARIO
 function addItem(name = '', desc = '', mod = 0) {
     const container = document.getElementById('items-list');
     const itemDiv = document.createElement('div');
@@ -50,27 +70,12 @@ function addItem(name = '', desc = '', mod = 0) {
         <textarea class="item-desc" placeholder="Descripción...">${desc}</textarea>
     `;
     container.appendChild(itemDiv);
-    itemDiv.querySelectorAll('input, textarea').forEach(el => {
-        el.addEventListener('input', saveToLocalStorage);
-    });
+    itemDiv.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', saveToLocalStorage));
 }
 
-function getItemsData() {
-    return Array.from(document.querySelectorAll('.magic-item')).map(item => ({
-        name: item.querySelector('.item-name').value,
-        mod: item.querySelector('.item-mod').value,
-        desc: item.querySelector('.item-desc').value
-    }));
-}
-
-// PERSISTENCIA LOCAL Y EXPORTACIÓN
+// PERSISTENCIA
 function saveToLocalStorage() {
-    const characterData = captureData();
-    localStorage.setItem('strands_character_v2', JSON.stringify(characterData));
-}
-
-function captureData() {
-    return {
+    const data = {
         name: document.getElementById('char-name').value,
         age: document.getElementById('char-age').value,
         concept: document.getElementById('char-concept').value,
@@ -79,14 +84,21 @@ function captureData() {
         imgUrl: document.getElementById('char-img-url').value,
         fate: document.getElementById('fate-display').innerText,
         aspects: Array.from(document.querySelectorAll('.aspect-input')).map(t => t.value),
-        skills: Array.from(document.querySelectorAll('.skill-ladder input')).map(t => t.value),
         notes: document.getElementById('notes-area').value,
-        items: getItemsData()
+        items: Array.from(document.querySelectorAll('.magic-item')).map(item => ({
+            name: item.querySelector('.item-name').value,
+            mod: item.querySelector('.item-mod').value,
+            desc: item.querySelector('.item-desc').value
+        }))
     };
+    localStorage.setItem('strands_v2_data', JSON.stringify(data));
 }
 
-function fillForm(data) {
-    if(!data) return;
+function loadFromLocalStorage() {
+    const saved = localStorage.getItem('strands_v2_data');
+    if(!saved) return;
+    const data = JSON.parse(saved);
+    
     document.getElementById('char-name').value = data.name || "";
     document.getElementById('char-age').value = data.age || "";
     document.getElementById('char-concept').value = data.concept || "";
@@ -99,39 +111,34 @@ function fillForm(data) {
     const aspects = document.querySelectorAll('.aspect-input');
     if(data.aspects) data.aspects.forEach((v, i) => { if(aspects[i]) aspects[i].value = v; });
 
-    const skills = document.querySelectorAll('.skill-ladder input');
-    if(data.skills) data.skills.forEach((v, i) => { if(skills[i]) skills[i].value = v; });
-
-    const itemsList = document.getElementById('items-list');
-    itemsList.innerHTML = "";
-    if(data.items) data.items.forEach(item => addItem(item.name, item.desc, item.mod));
-
+    if(data.items) {
+        document.getElementById('items-list').innerHTML = "";
+        data.items.forEach(item => addItem(item.name, item.desc, item.mod));
+    }
     updateImage();
 }
 
+// EXPORTAR / IMPORTAR
 function exportCharacter() {
-    const data = captureData();
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+    saveToLocalStorage();
+    const data = localStorage.getItem('strands_v2_data');
+    const blob = new Blob([data], {type : 'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `${data.name || 'Héroe'}_StrandsV2.json`;
+    a.download = `Ficha_${document.getElementById('char-name').value || 'Personaje'}.json`;
     a.click();
 }
 
 function importCharacter(event) {
-    const file = event.target.files[0];
-    if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
-        fillForm(JSON.parse(e.target.result));
-        saveToLocalStorage();
+    reader.onload = (e) => {
+        localStorage.setItem('strands_v2_data', e.target.result);
+        loadFromLocalStorage();
     };
-    reader.readAsText(file);
+    reader.readAsText(event.target.files[0]);
 }
 
-// Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    const saved = localStorage.getItem('strands_character_v2');
-    if(saved) fillForm(JSON.parse(saved));
+    loadFromLocalStorage();
     document.body.addEventListener('input', saveToLocalStorage);
 });
