@@ -1,15 +1,20 @@
-# 🧙‍♂️ Strands of Fate 2.0 - Edición Arcana
+# 🧙‍♂️ Strands of Fate 3.0 - Mystic Arcana
 
-Sistema avanzado de gestión de personajes con presupuesto de habilidades.
+Versión definitiva de la ficha interactiva para el sistema **Strands of Fate**. Diseñada con un motor de visualización místico y gestión de recursos en tiempo real.
 
-## 🌟 Novedades V2.0
-- **Panel de Habilidades Dinámico:** Crea tus propias habilidades. El presupuesto se calcula automáticamente restando el coste de tus puntos de **Recuperación**.
-- **Sección de Proezas (Stunts):** Nuevo espacio para describir tus poderes únicos bajo los Aspectos.
-- **Sistema de Consecuencias:** Desglose específico para daños Leves, Moderados y Graves.
-- **Selector de Tiradas Inteligente:** El Altar de Tiradas detecta automáticamente tus habilidades creadas y te permite seleccionarlas para lanzar dados.
-- **Auto-guardado & Persistencia:** Todo se guarda en tiempo real en el navegador.
+## 🌟 Nuevas Funcionalidades V3.0
+- **Rediseño Mystic:** Interfaz inmersiva con texturas de pergamino, tipografía clásica y botones de estilo metálico.
+- **Motor de Habilidades Dinámico:** Las "Artes" se crean al vuelo y consumen puntos de un presupuesto basado en la **Recuperación**.
+- **Esfera de Adivinación:** Altar de tiradas con selector automático de habilidades y registro histórico de crónicas.
+- **Reliquias Arcanas:** Inventario mejorado para objetos mágicos con modificadores directos.
+- **Persistencia Avanzada:** Guardado automático local y sistema de exportación/importación JSON.
 
-## 📜 Instrucciones
-1. Define tus puntos de **Recuperación**.
-2. Agrega habilidades; verás cómo bajan tus puntos disponibles.
-3. Usa el **Altar de Tiradas** para ejecutar acciones con tus bonos.
+## 🚀 Instalación
+Sube `index.html`, `style.css` y `app.js` a tu repositorio. Activa **GitHub Pages** y tu grimorio estará vivo.
+
+## 📜 Créditos
+- **Francisco Carballo**: Supervisor Creativo y Arquitecto de Reglas.
+- **Gemini (IA)**: Desarrollador de Código y Diseño de Interfaz.
+
+---
+*Desarrollado para la saga Strands of Potter.*
