@@ -3,41 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Marauder App - Strands of Fate</title>
+    <title>Marauder App v6</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="app-container">
         <header class="app-header">
             <h1 class="main-title">Strands of Fate</h1>
-            <p class="sub-title">I solemnly swear that I am up to no good</p>
         </header>
 
         <section id="perfil" class="app-section active">
             <div class="avatar-section">
-                <img id="char-img-display" src="https://via.placeholder.com/150?text=Mago" class="avatar-img">
-                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago">
+                <img id="char-img-display" src="https://via.placeholder.com/150" class="avatar-img">
+                <input type="text" id="char-name" class="name-input" placeholder="Nombre">
             </div>
             
-            <div class="stats-grid">
-                <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
-                <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
-                <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" oninput="updateSkillBudget()"></div>
-                <div class="fate-counter">
-                    <label>Destino</label>
-                    <div class="counter-controls">
-                        <button onclick="updateFate(-1)">-</button>
-                        <span id="fate-display">3</span>
-                        <button onclick="updateFate(1)">+</button>
-                    </div>
-                </div>
-            </div>
-
             <div class="aspects-box">
-                <h2>Vínculos y Esencia</h2>
-                <input type="text" class="aspect-input" placeholder="Aspecto Definidor">
-                <input type="text" class="aspect-input" placeholder="Vínculo de Sangre">
-                <input type="text" class="aspect-input" placeholder="Problema / Debilidad">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Vínculos y Esencia</h2>
+                    <button onclick="addAspect()" class="btn-add-small">+</button>
+                </div>
+                <div id="aspects-dynamic-list">
+                    </div>
             </div>
         </section>
 
@@ -47,61 +35,50 @@
                 <div class="budget-info">Esencia: <span id="skill-budget">0</span></div>
             </div>
             <div id="skills-dynamic-list"></div>
-            <button onclick="addSkill()" class="btn-add">+ Aprender Nueva Arte</button>
-
-            <h2 style="margin-top:25px">Proezas y Talentos</h2>
-            <textarea id="stunts-area" placeholder="Describe aquí tus habilidades especiales..."></textarea>
+            <button onclick="addSkill()" class="btn-roll" style="background:var(--gold)">+ Aprender Arte</button>
         </section>
 
         <section id="lanzar" class="app-section">
             <div class="roll-card">
-                <h2>Esfera de Adivinación</h2>
-                <div class="roll-selector-wrapper">
-                    <select id="skill-selector" class="mystic-select">
-                        <option value="0">Concentración Pura (+0)</option>
-                    </select>
-                    <button onclick="executeSelectedRoll()" class="btn-roll">✨ INVOCAR</button>
-                </div>
-                
-                <div id="dice-result-v2" class="result-display">
-                    <div class="final-score">?</div>
-                    <div class="dice-icons"></div>
-                </div>
+                <select id="skill-selector"></select>
+                <button onclick="executeSelectedRoll()" class="btn-roll">✨ INVOCAR</button>
+                <div id="dice-result-v2" class="result-display"><div class="final-score">?</div></div>
             </div>
 
-            <div class="status-tracks">
-                <h3>Estado y Daño</h3>
-                <div class="track"><span>Físico</span><div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
-                <div class="track"><span>Mental</span><div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
-            </div>
-            
-            <ul id="roll-history" class="history-list"></ul>
-        </section>
-
-        <section id="archivo" class="app-section">
-            <h2>Crónicas de Viaje</h2>
-            <textarea id="notes-area" rows="6" placeholder="Escribe tu historia..."></textarea>
-            
-            <div class="management-card">
-                <h3>Gestión del Pergamino</h3>
-                <input type="text" id="char-img-url" placeholder="URL Imagen del Personaje" onchange="updateImage()">
-                <div class="file-buttons">
-                    <button onclick="exportCharacter()" class="btn-save">📜 Guardar</button>
-                    <label class="btn-load">
-                        📖 Cargar <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
-                    </label>
+            <div class="status-grid-large" style="margin-top:20px">
+                <div class="track-group">
+                    <strong>Estrés Físico</strong>
+                    <div class="checks">
+                        <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+                    </div>
+                    <input type="text" placeholder="Consecuencia Física Leve">
+                    <input type="text" placeholder="Consecuencia Física Grave">
+                </div>
+                <div class="track-group">
+                    <strong>Estrés Mental</strong>
+                    <div class="checks">
+                        <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+                    </div>
+                    <input type="text" placeholder="Consecuencia Mental Leve">
+                    <input type="text" placeholder="Consecuencia Mental Grave">
                 </div>
             </div>
-            <p class="credits">Francisco Carballo (Supervisor) | Gemini (Dev)</p>
         </section>
 
         <nav class="tab-bar">
-            <button class="tab-item active" onclick="showTab('perfil', this)">👤<span>Perfil</span></button>
-            <button class="tab-item" onclick="showTab('magia', this)">🪄<span>Magia</span></button>
-            <button class="tab-item" onclick="showTab('lanzar', this)">🎲<span>Dados</span></button>
-            <button class="tab-item" onclick="showTab('archivo', this)">📜<span>Archivo</span></button>
+            <button class="tab-item active" onclick="showTab('perfil', this)">
+                <i data-lucide="user"></i><span>Perfil</span>
+            </button>
+            <button class="tab-item" onclick="showTab('magia', this)">
+                <i data-lucide="wand-2"></i><span>Magia</span>
+            </button>
+            <button class="tab-item" onclick="showTab('lanzar', this)">
+                <i data-lucide="dices"></i><span>Juego</span>
+            </button>
         </nav>
     </div>
+
     <script src="app.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
