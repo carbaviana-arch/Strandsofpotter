@@ -3,118 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strands of Fate 3.5 - Mystic Arcana</title>
+    <title>Marauder's Fate - Grimorio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="parchment-container">
         <header class="ornamental-header">
-            <div class="ornament top"></div>
             <h1 class="main-title">Strands of Fate</h1>
-            <p class="sub-title">Grimorio de Personaje</p>
-            <div class="ornament bottom"></div>
+            <p class="sub-title">I solemnly swear that I am up to no good</p>
         </header>
 
-        <nav class="magical-status-bar">
-            <div class="fate-points-shield">
-                <span>Puntos de Destino</span>
-                <div class="fate-controls">
-                    <button onclick="updateFate(-1)">-</button>
-                    <span id="fate-display">3</span>
-                    <button onclick="updateFate(1)">+</button>
-                </div>
+        <nav class="magical-status-bar" style="display:flex; justify-content:center; margin-bottom:20px;">
+            <div class="fate-points-shield" style="background:var(--blood); color:white; padding:10px; border-radius:10px; text-align:center; border:2px solid var(--gold)">
+                <span style="font-family:'MedievalSharp'">Puntos de Destino:</span>
+                <button onclick="updateFate(-1)">-</button>
+                <span id="fate-display" style="font-size:1.5rem; margin:0 10px">3</span>
+                <button onclick="updateFate(1)">+</button>
             </div>
         </nav>
 
-        <div class="character-identity">
+        <div class="character-identity" style="display:flex; gap:20px; margin-bottom:30px;">
             <div class="avatar-frame">
-                <img id="char-img-display" src="https://via.placeholder.com/150?text=Retrato" alt="Retrato">
+                <img id="char-img-display" src="https://via.placeholder.com/150?text=Retrato" style="width:140px; height:140px; border-radius:50%; border:5px solid var(--ink); object-fit:cover;">
             </div>
-            <div class="identity-fields">
-                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago/Bruja">
-                <div class="sub-fields">
-                    <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
-                    <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
-                    <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" oninput="updateSkillBudget()"></div>
-                    <div class="budget-badge">Esencia: <span id="skill-budget">0</span></div>
+            <div class="identity-fields" style="flex:1">
+                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                    <input type="text" id="char-age" placeholder="Origen">
+                    <input type="text" id="char-concept" placeholder="Concepto">
+                    <input type="number" id="recovery-val" placeholder="Recup." oninput="updateSkillBudget()">
+                    <div style="font-family:'MedievalSharp'; font-weight:bold">Esencia: <span id="skill-budget">0</span></div>
                 </div>
             </div>
         </div>
 
-        <div class="main-content">
-            <aside class="left-column">
-                <section class="box-section">
-                    <h2>Vínculos y Esencia</h2>
-                    <div id="aspects-list">
-                        <input type="text" class="aspect-input" placeholder="Aspecto Definidor">
-                        <input type="text" class="aspect-input" placeholder="Vínculo de Sangre">
-                        <input type="text" class="aspect-input" placeholder="Vínculo Social">
-                        <input type="text" class="aspect-input" placeholder="Debilidad Oculta">
-                        <h3 class="mini-title">Proeza Arcana</h3>
-                        <textarea id="stunts-area" class="stunt-input" placeholder="Describe tu habilidad única..."></textarea>
-                    </div>
-                </section>
-
-                <section class="box-section">
-                    <h2>Artes (Habilidades)</h2>
-                    <div id="skills-dynamic-list"></div>
-                    <button onclick="addSkill()" class="btn-secondary">+ Aprender Arte</button>
-                </section>
+        <div class="main-content" style="display:grid; grid-template-columns: 1fr 1.2fr; gap:30px;">
+            <aside>
+                <h2>Vínculos y Esencia</h2>
+                <div id="aspects-list" style="display:flex; flex-direction:column; gap:5px;">
+                    <input type="text" class="aspect-input" placeholder="Aspecto Definidor">
+                    <input type="text" class="aspect-input" placeholder="Vínculo Mágico">
+                    <input type="text" class="aspect-input" placeholder="Vínculo Social">
+                    <input type="text" class="aspect-input" placeholder="Debilidad Oculta">
+                    <textarea id="stunts-area" style="height:80px; margin-top:10px;" placeholder="Proezas Arcanas..."></textarea>
+                </div>
+                <h2 style="margin-top:20px">Artes (Habilidades)</h2>
+                <div id="skills-dynamic-list"></div>
+                <button onclick="addSkill()" style="width:100%; margin-top:10px;">+ Aprender Arte</button>
             </aside>
 
-            <main class="right-column">
-                <section class="box-section roll-altar">
-                    <h2>Esfera de Adivinación</h2>
-                    <div class="roll-controls">
-                        <select id="skill-selector" class="mystic-select">
-                            <option value="0">Tirada Pura (+0)</option>
-                        </select>
-                        <button onclick="executeSelectedRoll()" class="btn-roll">✨ Invocar</button>
+            <main>
+                <section class="roll-altar">
+                    <h2 style="border:none; text-align:center">Esfera de Adivinación</h2>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <select id="skill-selector" style="flex:1"></select>
+                        <button onclick="executeSelectedRoll()">✨ Lanzar</button>
                     </div>
-                    <div id="dice-result-v2" class="result-box">
+                    <div id="dice-result-v2" class="result-box" style="text-align:center; display:flex; flex-direction:column; justify-content:center;">
                         <div class="final-score">?</div>
                     </div>
-                    <ul id="roll-history" class="history-list"></ul>
+                    <ul id="roll-history" style="font-size:0.8rem; list-style:none; padding:0; height:60px; overflow-y:auto; border-top:1px solid var(--gold)"></ul>
                 </section>
 
-                <section class="box-section">
-                    <h2>Estado y Daño</h2>
-                    <div class="stress-container">
-                        <div class="stress-track"><span>Cuerpo:</span> <div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
-                        <div class="stress-track"><span>Mente:</span> <div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
-                    </div>
-                    <div class="consequences-list">
-                        <input type="text" placeholder="Leve (2)">
-                        <input type="text" placeholder="Moderada (4)">
-                        <input type="text" placeholder="Grave (6)">
-                    </div>
-                </section>
-
-                <section class="box-section">
-                    <h2>Reliquias</h2>
-                    <div id="items-list"></div>
-                    <button onclick="addItem()" class="btn-secondary">+ Añadir Objeto</button>
-                </section>
+                <h2 style="margin-top:20px">Estado</h2>
+                <div style="display:flex; gap:20px; font-weight:bold;">
+                    <div>Cuerpo: <input type="checkbox"><input type="checkbox"><input type="checkbox"></div>
+                    <div>Mente: <input type="checkbox"><input type="checkbox"><input type="checkbox"></div>
+                </div>
+                <div style="margin-top:10px">
+                    <input type="text" style="width:100%" placeholder="Consecuencia Leve">
+                    <input type="text" style="width:100%" placeholder="Consecuencia Grave">
+                </div>
             </main>
         </div>
 
-        <section class="box-section full-width">
-            <h2>Crónicas de Viaje</h2>
-            <textarea id="notes-area" rows="3" placeholder="El curso de la historia..."></textarea>
-        </section>
-
         <footer class="pergamino-footer">
-            <div class="footer-divider"></div>
-            <div class="management-panel">
-                <div class="image-config">
-                    <label>Espejo del Alma (URL Imagen):</label>
-                    <input type="text" id="char-img-url" placeholder="https://..." onchange="updateImage()">
-                </div>
-                <div class="file-actions">
-                    <button onclick="exportCharacter()" class="btn-save">📜 Sellar y Guardar Pergamino</button>
-                    <label class="custom-file-upload">
-                        <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)">
-                        📖 Abrir Antiguo
+            <div class="footer-divider">✒️</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <input type="text" id="char-img-url" placeholder="URL del Espejo del Alma (Imagen)" onchange="updateImage()">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <button onclick="exportCharacter()">📜 Sellar Pergamino</button>
+                    <label style="background:var(--gold); padding:5px 10px; font-family:'MedievalSharp'; cursor:pointer">
+                        <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
+                        📖 Leer Antiguo
                     </label>
                 </div>
             </div>
