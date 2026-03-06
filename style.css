@@ -1,80 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=MedievalSharp&family=Inter:wght@400;600&display=swap');
 
 :root {
     --ink: #3b1f13;
-    --blood: #5e0000;
+    --blood: #740001;
     --gold: #8c6d31;
-    --parchment: rgba(244, 228, 188, 0.95);
+    /* Fondo más transparente: 0.85 en lugar de 0.95 */
+    --parchment: rgba(244, 228, 188, 0.85); 
+    --glass: rgba(26, 15, 10, 0.8);
 }
 
 body {
-    background: #1a0f0a url('oath-of-the-marauders-map-rty5hmjpco2j92s6.jpg') center/cover fixed;
-    margin: 0; padding: 0; font-family: 'Crimson Pro', serif;
-    color: var(--ink); height: 100vh; overflow: hidden;
+    background: #1a0f0a url('oath-of-the-marauders-map-rty5hmjpco2j92s6.jpg') center/cover fixed no-repeat;
+    margin: 0; font-family: 'Crimson Pro', serif; color: var(--ink);
+    height: 100vh; overflow: hidden;
 }
 
 .app-container {
     background: var(--parchment);
-    max-width: 500px; margin: 0 auto;
-    height: 100vh; display: flex; flex-direction: column;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px); /* Suaviza el mapa de fondo */
+    max-width: 500px; margin: 0 auto; height: 100vh;
+    display: flex; flex-direction: column; position: relative;
 }
 
-/* HEADER */
-.app-header {
-    text-align: center; padding: 15px;
-    border-bottom: 2px solid var(--gold);
-    background: rgba(0,0,0,0.03);
-}
-.main-title { font-family: 'MedievalSharp'; font-size: 1.5rem; margin: 0; color: var(--blood); }
-.sub-title { font-size: 0.8rem; font-style: italic; margin: 0; opacity: 0.7; }
-
-/* SECCIONES */
-.app-section {
-    flex: 1; overflow-y: auto; padding: 20px;
-    display: none; padding-bottom: 80px; /* Espacio para la tab-bar */
-}
-.app-section.active { display: block; animation: slideIn 0.3s ease-out; }
-
-@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ELEMENTOS DE FORMULARIO */
-input, textarea, select {
-    width: 100%; padding: 10px; margin: 5px 0;
-    background: rgba(255,255,255,0.4); border: none;
-    border-bottom: 1px solid var(--gold); box-sizing: border-box;
-}
-.name-input { font-family: 'MedievalSharp'; font-size: 1.8rem; text-align: center; color: var(--blood); }
-
-/* TAB BAR */
+/* DOCK MODERNO Y ESTILIZADO */
 .tab-bar {
-    position: absolute; bottom: 0; width: 100%; max-width: 500px;
-    display: flex; justify-content: space-around;
-    background: var(--ink); border-top: 3px solid var(--gold);
-    padding: 10px 0; z-index: 100;
+    position: absolute; bottom: 15px; left: 10px; right: 10px;
+    height: 65px; background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    display: flex; justify-content: space-around; align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
 }
+
 .tab-item {
-    background: none; border: none; color: #f2e3c9; opacity: 0.6;
-    display: flex; flex-direction: column; align-items: center; font-size: 0.7rem;
-}
-.tab-item span { margin-top: 4px; font-family: 'MedievalSharp'; }
-.tab-item.active { opacity: 1; color: var(--gold); transform: translateY(-3px); }
-
-/* ALTAR DE TIRADAS */
-.roll-card {
-    background: rgba(255,255,255,0.6); padding: 20px;
-    border-radius: 15px; border: 2px solid var(--gold); text-align: center;
-}
-.final-score { font-size: 4rem; font-family: 'MedievalSharp'; color: var(--blood); margin: 10px 0; }
-.btn-roll {
-    width: 100%; background: var(--blood); color: white;
-    padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px;
+    background: none; border: none; color: #f2e3c9; opacity: 0.5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; align-items: center; cursor: pointer;
 }
 
-/* AVATAR */
-.avatar-section { text-align: center; }
-.avatar-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--ink); object-fit: cover; }
+.tab-item i { font-size: 1.4rem; margin-bottom: 2px; }
+.tab-item span { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-.fate-counter { text-align: center; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 5px; }
-.counter-controls { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; }
+.tab-item.active {
+    opacity: 1; color: var(--gold);
+    transform: translateY(-5px);
+}
+
+/* LISTAS DINÁMICAS (Aspectos y Artes) */
+.dynamic-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+    background: rgba(0,0,0,0.03); padding: 5px; border-radius: 8px;
+}
+.mod-input { width: 60px; text-align: center; font-weight: bold; border-radius: 5px; }
+
+/* ESTADO Y DAÑO */
+.status-grid-large { display: flex; flex-direction: column; gap: 15px; }
+.track-group { background: rgba(255,255,255,0.3); padding: 10px; border-radius: 12px; border: 1px solid var(--gold); }
+.checks { display: flex; gap: 8px; margin: 10px 0; }
+.checks input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--blood); }
+
+/* Botones con estilo */
+.btn-add-small { 
+    background: var(--gold); color: white; border: none; 
+    border-radius: 50%; width: 24px; height: 24px; cursor: pointer; 
+}
