@@ -1,4 +1,3 @@
-// NAVEGACIÓN
 function showTab(tabId, element) {
     const targetBtn = element.closest('.tab-item');
     if (!targetBtn) return;
@@ -9,14 +8,8 @@ function showTab(tabId, element) {
     if (tabId === 'lanzar') updateSkillSelector();
 }
 
-// FUNCIONES DINÁMICAS (Añadir Aspecto, Arte, Objeto, Hechizo)
-function addAspect(text = '', mod = 0) {
-    createRow('aspects-dynamic-list', text, mod, 'Aspecto/Vínculo');
-}
-
-function addItem(text = '', mod = 0) {
-    createRow('items-dynamic-list', text, mod, 'Nombre del Objeto');
-}
+function addAspect(text = '', mod = 0) { createRow('aspects-dynamic-list', text, mod, 'Aspecto/Vínculo'); }
+function addItem(text = '', mod = 0) { createRow('items-dynamic-list', text, mod, 'Objeto Mágico'); }
 
 function createRow(containerId, text, mod, placeholder) {
     const container = document.getElementById(containerId);
@@ -25,7 +18,7 @@ function createRow(containerId, text, mod, placeholder) {
     div.innerHTML = `
         <input type="text" class="text-input" placeholder="${placeholder}" value="${text}" style="flex:1">
         <input type="number" class="mod-input" value="${mod}">
-        <button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--blood); font-size:1.1rem; cursor:pointer">✕</button>
+        <button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--blood); cursor:pointer">✕</button>
     `;
     container.appendChild(div);
 }
@@ -47,17 +40,10 @@ function addSpell(name = '', desc = '') {
     const container = document.getElementById('spells-dynamic-list');
     const div = document.createElement('div');
     div.className = 'spell-row';
-    div.innerHTML = `
-        <div class="dynamic-row">
-            <input type="text" class="spell-name" placeholder="Hechizo" value="${name}" style="font-weight:bold">
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:var(--blood); cursor:pointer">✕</button>
-        </div>
-        <textarea placeholder="Efecto del hechizo..." style="font-size:0.9rem; height:45px">${desc}</textarea>
-    `;
+    div.innerHTML = `<div class="dynamic-row"><input type="text" class="spell-name" placeholder="Hechizo" value="${name}" style="font-weight:bold"><button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:var(--blood); cursor:pointer">✕</button></div><textarea placeholder="Efecto..." style="font-size:0.9rem; height:45px">${desc}</textarea>`;
     container.appendChild(div);
 }
 
-// LOGICA DE REGLAS
 function updateSkillBudget() {
     const recovery = parseInt(document.getElementById('recovery-val').value) || 0;
     const skills = document.querySelectorAll('.skill-val-input');
@@ -74,17 +60,16 @@ function updateSkillSelector() {
     const selector = document.getElementById('skill-selector');
     if (!selector) return;
     selector.innerHTML = '<option value="0">Concentración (+0)</option>';
-    const names = document.querySelectorAll('.skill-name-input');
-    const vals = document.querySelectorAll('.skill-val-input');
-    names.forEach((n, i) => { if (n.value) {
-        const opt = document.createElement('option');
-        opt.value = vals[i].value;
-        opt.text = `${n.value} (+${vals[i].value})`;
-        selector.add(opt);
-    }});
+    document.querySelectorAll('.skill-name-input').forEach((n, i) => {
+        if (n.value) {
+            const opt = document.createElement('option');
+            opt.value = document.querySelectorAll('.skill-val-input')[i].value;
+            opt.text = `${n.value} (+${opt.value})`;
+            selector.add(opt);
+        }
+    });
 }
 
-// DADOS Y VARIOS
 function executeSelectedRoll() {
     const selector = document.getElementById('skill-selector');
     const bonus = parseInt(selector.value);
@@ -109,9 +94,9 @@ function updateFate(val) {
     d.innerText = Math.max(0, parseInt(d.innerText) + val);
 }
 
-// PERSISTENCIA ACTUALIZADA (v6.6)
 function exportCharacter() {
     const data = {
+        campaign: document.getElementById('campaign-name').value,
         name: document.getElementById('char-name').value,
         recovery: document.getElementById('recovery-val').value,
         fate: document.getElementById('fate-display').innerText,
@@ -120,14 +105,9 @@ function exportCharacter() {
         stunts: document.getElementById('stunts-area').value,
         notes: document.getElementById('notes-area').value,
         charImg: document.getElementById('char-img-url').value,
-        // Carga de Consecuencias (NUEVO v6.6)
         consequences: {
-            pMild: document.getElementById('phys-mild').value,
-            pMod: document.getElementById('phys-mod').value,
-            pSev: document.getElementById('phys-sev').value,
-            mMild: document.getElementById('ment-mild').value,
-            mMod: document.getElementById('ment-mod').value,
-            mSev: document.getElementById('ment-sev').value
+            pMild: document.getElementById('phys-mild').value, pMod: document.getElementById('phys-mod').value, pSev: document.getElementById('phys-sev').value,
+            mMild: document.getElementById('ment-mild').value, mMod: document.getElementById('ment-mod').value, mSev: document.getElementById('ment-sev').value
         },
         aspects: Array.from(document.querySelectorAll('#aspects-dynamic-list .dynamic-row')).map(r => ({t: r.querySelector('.text-input').value, m: r.querySelector('.mod-input').value})),
         skills: Array.from(document.querySelectorAll('#skills-dynamic-list .dynamic-row')).map(r => ({n: r.querySelector('.skill-name-input').value, v: r.querySelector('.skill-val-input').value})),
@@ -137,7 +117,7 @@ function exportCharacter() {
     const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `${data.name || 'mago'}.json`;
+    a.download = `${data.name || 'mago'}_${data.campaign || 'ficha'}.json`;
     a.click();
 }
 
@@ -145,6 +125,7 @@ function importCharacter(event) {
     const reader = new FileReader();
     reader.onload = (e) => {
         const d = JSON.parse(e.target.result);
+        document.getElementById('campaign-name').value = d.campaign || "";
         document.getElementById('char-name').value = d.name || "";
         document.getElementById('char-age').value = d.age || "";
         document.getElementById('char-concept').value = d.concept || "";
@@ -153,17 +134,10 @@ function importCharacter(event) {
         document.getElementById('stunts-area').value = d.stunts || "";
         document.getElementById('notes-area').value = d.notes || "";
         document.getElementById('char-img-url').value = d.charImg || "";
-        
-        // Carga de Consecuencias (NUEVO v6.6)
         if(d.consequences) {
-            document.getElementById('phys-mild').value = d.consequences.pMild || "";
-            document.getElementById('phys-mod').value = d.consequences.pMod || "";
-            document.getElementById('phys-sev').value = d.consequences.pSev || "";
-            document.getElementById('ment-mild').value = d.consequences.mMild || "";
-            document.getElementById('ment-mod').value = d.consequences.mMod || "";
-            document.getElementById('ment-sev').value = d.consequences.mSev || "";
+            document.getElementById('phys-mild').value = d.consequences.pMild; document.getElementById('phys-mod').value = d.consequences.pMod; document.getElementById('phys-sev').value = d.consequences.pSev;
+            document.getElementById('ment-mild').value = d.consequences.mMild; document.getElementById('ment-mod').value = d.consequences.mMod; document.getElementById('ment-sev').value = d.consequences.mSev;
         }
-
         document.getElementById('aspects-dynamic-list').innerHTML = "";
         if(d.aspects) d.aspects.forEach(a => addAspect(a.t, a.m));
         document.getElementById('skills-dynamic-list').innerHTML = "";
@@ -172,9 +146,7 @@ function importCharacter(event) {
         if(d.items) d.items.forEach(i => addItem(i.t, i.m));
         document.getElementById('spells-dynamic-list').innerHTML = "";
         if(d.spells) d.spells.forEach(s => addSpell(s.n, s.d));
-        
-        updateImage();
-        updateSkillBudget();
+        updateImage(); updateSkillBudget();
     };
     reader.readAsText(event.target.files[0]);
 }
@@ -182,6 +154,5 @@ function importCharacter(event) {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('aspects-dynamic-list').children.length === 0) {
         addAspect('Aspecto Definidor', 0);
-        addAspect('Vínculo', 0);
     }
 });
