@@ -39,8 +39,7 @@
                     <h2>Vínculos y Esencia</h2>
                     <button onclick="addAspect()" class="btn-add-mini">+</button>
                 </div>
-                <div id="aspects-dynamic-list">
-                    </div>
+                <div id="aspects-dynamic-list"></div>
             </div>
         </section>
 
@@ -50,10 +49,22 @@
                 <div class="budget-info">Esencia Libre: <span id="skill-budget">0</span></div>
             </div>
             <div id="skills-dynamic-list"></div>
-            <button onclick="addSkill()" class="btn-action">+ Aprender Nueva Arte</button>
+            <button onclick="addSkill()" class="btn-action">+ Aprender Arte</button>
+
+            <div class="section-header-row" style="margin-top:25px">
+                <h2>Reliquias y Objetos</h2>
+                <button onclick="addItem()" class="btn-add-mini">+</button>
+            </div>
+            <div id="items-dynamic-list"></div>
+
+            <div class="section-header-row" style="margin-top:25px">
+                <h2>Libro de Hechizos</h2>
+                <button onclick="addSpell()" class="btn-add-mini">+</button>
+            </div>
+            <div id="spells-dynamic-list"></div>
 
             <h2 style="margin-top:25px">Proezas y Talentos</h2>
-            <textarea id="stunts-area" placeholder="Describe aquí tus habilidades especiales..."></textarea>
+            <textarea id="stunts-area" placeholder="Describe aquí tus proezas..."></textarea>
         </section>
 
         <section id="lanzar" class="app-section">
@@ -96,10 +107,9 @@
             
             <div class="management-card">
                 <h3>Configuración</h3>
-                <label>URL Imagen:</label>
-                <input type="text" id="char-img-url" placeholder="https://..." onchange="updateImage()">
+                <input type="text" id="char-img-url" placeholder="URL Imagen" onchange="updateImage()">
                 <div class="file-buttons">
-                    <button onclick="exportCharacter()" class="btn-save">📜 Guardar Pergamino</button>
+                    <button onclick="exportCharacter()" class="btn-save">📜 Guardar</button>
                     <label class="btn-load">
                         📖 Cargar <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
                     </label>
