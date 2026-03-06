@@ -4,125 +4,99 @@
     --ink: #3b1f13;
     --blood: #5e0000;
     --gold: #8c6d31;
-    --magic-glow: rgba(255, 230, 150, 0.2);
+    --parchment-alpha: rgba(244, 228, 188, 0.92);
 }
 
 body {
-    background-color: #1a0f0a;
-    /* Usamos la imagen del Mapa como fondo de pantalla completo */
-    background-image: url('oath-of-the-marauders-map-rty5hmjpco2j92s6.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    font-family: 'Crimson Pro', serif;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+    background: #1a0f0a url('oath-of-the-marauders-map-rty5hmjpco2j92s6.jpg') center/cover fixed no-repeat;
     margin: 0;
-}
-
-.parchment-container {
-    background: rgba(244, 228, 188, 0.85); /* Fondo semitransparente para que se vea el mapa atrás */
-    backdrop-filter: blur(2px);
-    max-width: 900px;
-    width: 100%;
-    padding: 50px;
-    border: 30px solid transparent;
-    /* Efecto de borde quemado/antiguo */
-    border-image: url('https://www.publicdomainpictures.net/pictures/30000/velka/old-paper-frame.jpg') 60 round;
-    box-shadow: 0 0 100px rgba(0,0,0,0.8);
-    position: relative;
+    padding: 0;
+    font-family: 'Crimson Pro', serif;
     color: var(--ink);
+    display: block; /* Cambiado para scroll natural en móvil */
 }
 
-/* Cabecera Estilo Marauder */
+/* Contenedor principal adaptable */
+.parchment-container {
+    background: var(--parchment-alpha);
+    min-height: 100vh;
+    width: 100%;
+    max-width: 600px; /* Tamaño ideal para móvil/tablet */
+    margin: 0 auto;
+    padding: 20px 20px 100px 20px; /* Padding inferior para el menú */
+    box-sizing: border-box;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    border-left: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+}
+
+/* Cabecera compacta */
 .ornamental-header {
     text-align: center;
-    border-bottom: 2px solid var(--blood);
-    margin-bottom: 30px;
-    padding-bottom: 10px;
+    padding: 10px 0;
+    border-bottom: 2px double var(--gold);
 }
+.main-title { font-family: 'MedievalSharp'; font-size: 1.8rem; color: var(--blood); margin: 0; }
+.sub-title { font-family: 'Mrs+Saint+Delafield'; font-size: 1.5rem; margin: 0; }
 
-.main-title {
-    font-family: 'MedievalSharp', cursive;
-    font-size: 3rem;
-    color: var(--blood);
-    text-transform: uppercase;
-    margin: 0;
+/* Navegación estilo App (Bottom Bar) */
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    background: var(--ink);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 3px solid var(--gold);
+    z-index: 1000;
 }
-
-.sub-title {
-    font-family: 'Mrs Saint Delafield', cursive; /* Fuente manuscrita elegante */
-    font-size: 2.5rem;
-    color: var(--ink);
-    margin-top: -15px;
-}
-
-/* Campos de entrada: Tinta pura */
-input, textarea, select {
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 1px dashed var(--ink) !important;
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.1rem;
-    color: var(--ink);
-}
-
-.name-input {
-    font-family: 'MedievalSharp' !important;
-    font-size: 2.2rem !important;
-    color: var(--blood) !important;
-    text-align: center;
-}
-
-/* Botones como Sellos de Cera */
-button {
-    background: var(--blood) !important;
-    color: #f2e3c9 !important;
-    border: 1px solid var(--ink) !important;
-    font-family: 'MedievalSharp' !important;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-}
-
-button:hover {
-    transform: scale(1.05);
-    filter: brightness(1.2);
-}
-
-/* Altar de Tiradas - Enfoque Místico */
-.roll-altar {
-    background: rgba(59, 31, 19, 0.05);
-    border: 2px solid var(--gold);
-    border-radius: 20px;
-    padding: 20px;
-}
-
-.result-box {
-    background: rgba(255, 255, 255, 0.4) !important;
-    border: 2px solid var(--gold) !important;
-    border-radius: 50% / 10%;
-    margin: 20px 0;
-    min-height: 100px;
-}
-
-.final-score {
-    font-size: 3.5rem !important;
+.nav-item {
+    color: var(--parchment-alpha);
+    text-decoration: none;
     font-family: 'MedievalSharp';
-}
-
-/* Footer Tecnológico */
-.pergamino-footer {
-    margin-top: 40px;
     font-size: 0.8rem;
-    border-top: 1px solid var(--gold);
-    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.7;
+}
+.nav-item.active { opacity: 1; color: var(--gold); }
+
+/* Secciones que se ocultan/muestran */
+.app-section { display: none; animation: fadeIn 0.3s ease; }
+.app-section.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Inputs táctiles */
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: rgba(0,0,0,0.05);
+    border: none;
+    border-bottom: 1px solid var(--gold);
+    box-sizing: border-box;
+    font-size: 1rem;
 }
 
-.footer-divider {
-    text-align: center;
-    color: var(--gold);
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    min-height: 44px; /* Tamaño mínimo táctil recomendado */
 }
+
+/* Altar de Tiradas Compacto */
+.roll-altar {
+    background: white;
+    border: 2px solid var(--gold);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+}
+.final-score { font-size: 4rem; font-family: 'MedievalSharp'; color: var(--blood); }
