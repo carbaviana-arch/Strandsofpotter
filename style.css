@@ -21,7 +21,7 @@ body {
 
 .app-container {
     background: var(--parchment);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     max-width: 500px; margin: 0 auto;
     height: 100vh; display: flex; flex-direction: column; position: relative;
 }
