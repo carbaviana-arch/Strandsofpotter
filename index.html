@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Marauder App - Strands of Fate</title>
+    <title>Marauder App - Strands of Fate v6.5</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -86,16 +86,23 @@
                     <div class="checks">
                         <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
                     </div>
-                    <input type="text" placeholder="Consecuencia Física Leve">
-                    <input type="text" placeholder="Consecuencia Física Grave">
+                    <div class="consequences-stack">
+                        <input type="text" id="phys-mild" placeholder="Leve (F)" class="consequence-mild">
+                        <input type="text" id="phys-mod" placeholder="Moderada (F)" class="consequence-mod">
+                        <input type="text" id="phys-sev" placeholder="Grave (F)" class="consequence-sev">
+                    </div>
                 </div>
+                
                 <div class="track-group">
                     <strong>Estrés Mental</strong>
                     <div class="checks">
                         <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
                     </div>
-                    <input type="text" placeholder="Consecuencia Mental Leve">
-                    <input type="text" placeholder="Consecuencia Mental Grave">
+                    <div class="consequences-stack">
+                        <input type="text" id="ment-mild" placeholder="Leve (M)" class="consequence-mild">
+                        <input type="text" id="ment-mod" placeholder="Moderada (M)" class="consequence-mod">
+                        <input type="text" id="ment-sev" placeholder="Grave (M)" class="consequence-sev">
+                    </div>
                 </div>
             </div>
             <ul id="roll-history" class="history-list"></ul>
