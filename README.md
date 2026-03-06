@@ -1,22 +1,19 @@
-# 🧙‍♂️ Strands of Fate 3.0 - Mystic Arcana
+# 🧙‍♂️ Strands of Fate 3.5 - Mystic Arcana
 
-Versión evolucionada y mística de la ficha interactiva para el sistema de rol **Strands of Fate**. Diseñada para ofrecer una experiencia inmersiva, moderna y llamativa.
+Versión inmersiva y técnica refinada para la gestión de personajes de rol.
 
-## 🌟 Novedades V3.0
-- **Rediseño Mystic Overhaul:** Interfaz completamente renovada con texturas de pergamino antiguo, efectos de profundidad y una estética "Dark Academia".
-- **Esfera de Adivinación:** El altar de tiradas centralizado cuenta con un selector místico, animaciones de lanzamiento y un historial visual de crónicas.
-- **Avatar Camafeo:** El retrato del personaje se enmarca en un diseño circular clásico.
-- **Presupuesto de Esencia:** Gestión dinámica de habilidades basada en los puntos de **Recuperación**, con alertas visuales de exceso.
-- **Persistencia Mágica:** Guardado automático local (LocalStorage) y sistema de exportación/importación JSON mejorado.
+## 🌟 Cambios en v3.5
+- **Cabecera Ornamental:** Nueva estructura visual con divisores dorados y títulos medievales.
+- **Gestión Técnica Discreta:** El control de URL de imagen y los botones de exportación se han movido al pie de página (Footer) para no romper la atmósfera de juego.
+- **Persistencia Total:** Auto-guardado en LocalStorage y exportación a JSON.
+- **Esfera de Adivinación:** Sistema de tiradas 4dF integrado con el panel de artes dinámicas.
 
-## 🚀 Instalación y Uso
-1. Sube los archivos `index.html`, `style.css` y `app.js` a tu repositorio de GitHub.
-2. Activa **GitHub Pages** en la configuración del repositorio.
-3. ¡Accede a tu grimorio digital desde cualquier navegador!
+## 🚀 Instalación
+Sube `index.html`, `style.css` y `app.js` a tu repositorio. Activa **GitHub Pages** y comparte el enlace.
 
 ## 📜 Créditos
 - **Francisco Carballo**: Supervisor Creativo y Arquitecto de Reglas.
 - **Gemini (IA)**: Desarrollador de Código y Diseño de Interfaz.
 
 ---
-*Desarrollado para campañas épicas en el universo de Strands of Potter.*
+*Grimorio digital diseñado para la saga Strands of Potter.*
