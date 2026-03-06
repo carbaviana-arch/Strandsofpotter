@@ -109,7 +109,7 @@ function updateFate(val) {
     d.innerText = Math.max(0, parseInt(d.innerText) + val);
 }
 
-// PERSISTENCIA
+// PERSISTENCIA ACTUALIZADA (v6.6)
 function exportCharacter() {
     const data = {
         name: document.getElementById('char-name').value,
@@ -119,6 +119,16 @@ function exportCharacter() {
         concept: document.getElementById('char-concept').value,
         stunts: document.getElementById('stunts-area').value,
         notes: document.getElementById('notes-area').value,
+        charImg: document.getElementById('char-img-url').value,
+        // Carga de Consecuencias (NUEVO v6.6)
+        consequences: {
+            pMild: document.getElementById('phys-mild').value,
+            pMod: document.getElementById('phys-mod').value,
+            pSev: document.getElementById('phys-sev').value,
+            mMild: document.getElementById('ment-mild').value,
+            mMod: document.getElementById('ment-mod').value,
+            mSev: document.getElementById('ment-sev').value
+        },
         aspects: Array.from(document.querySelectorAll('#aspects-dynamic-list .dynamic-row')).map(r => ({t: r.querySelector('.text-input').value, m: r.querySelector('.mod-input').value})),
         skills: Array.from(document.querySelectorAll('#skills-dynamic-list .dynamic-row')).map(r => ({n: r.querySelector('.skill-name-input').value, v: r.querySelector('.skill-val-input').value})),
         items: Array.from(document.querySelectorAll('#items-dynamic-list .dynamic-row')).map(r => ({t: r.querySelector('.text-input').value, m: r.querySelector('.mod-input').value})),
@@ -142,7 +152,18 @@ function importCharacter(event) {
         document.getElementById('fate-display').innerText = d.fate || 3;
         document.getElementById('stunts-area').value = d.stunts || "";
         document.getElementById('notes-area').value = d.notes || "";
+        document.getElementById('char-img-url').value = d.charImg || "";
         
+        // Carga de Consecuencias (NUEVO v6.6)
+        if(d.consequences) {
+            document.getElementById('phys-mild').value = d.consequences.pMild || "";
+            document.getElementById('phys-mod').value = d.consequences.pMod || "";
+            document.getElementById('phys-sev').value = d.consequences.pSev || "";
+            document.getElementById('ment-mild').value = d.consequences.mMild || "";
+            document.getElementById('ment-mod').value = d.consequences.mMod || "";
+            document.getElementById('ment-sev').value = d.consequences.mSev || "";
+        }
+
         document.getElementById('aspects-dynamic-list').innerHTML = "";
         if(d.aspects) d.aspects.forEach(a => addAspect(a.t, a.m));
         document.getElementById('skills-dynamic-list').innerHTML = "";
@@ -152,6 +173,7 @@ function importCharacter(event) {
         document.getElementById('spells-dynamic-list').innerHTML = "";
         if(d.spells) d.spells.forEach(s => addSpell(s.n, s.d));
         
+        updateImage();
         updateSkillBudget();
     };
     reader.readAsText(event.target.files[0]);
