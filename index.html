@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Marauder App v6</title>
+    <title>Marauder App - Strands of Fate</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -11,18 +11,33 @@
     <div class="app-container">
         <header class="app-header">
             <h1 class="main-title">Strands of Fate</h1>
+            <p class="sub-title">I solemnly swear that I am up to no good</p>
         </header>
 
         <section id="perfil" class="app-section active">
             <div class="avatar-section">
-                <img id="char-img-display" src="https://via.placeholder.com/150" class="avatar-img">
-                <input type="text" id="char-name" class="name-input" placeholder="Nombre">
+                <img id="char-img-display" src="https://via.placeholder.com/150?text=Mago" class="avatar-img">
+                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago">
             </div>
             
+            <div class="stats-grid">
+                <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
+                <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
+                <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" value="0" oninput="updateSkillBudget()"></div>
+                <div class="fate-counter">
+                    <label>Puntos Destino</label>
+                    <div class="counter-controls">
+                        <button onclick="updateFate(-1)">-</button>
+                        <span id="fate-display">3</span>
+                        <button onclick="updateFate(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="aspects-box">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="section-header-row">
                     <h2>Vínculos y Esencia</h2>
-                    <button onclick="addAspect()" class="btn-add-small">+</button>
+                    <button onclick="addAspect()" class="btn-add-mini">+</button>
                 </div>
                 <div id="aspects-dynamic-list">
                     </div>
@@ -30,22 +45,31 @@
         </section>
 
         <section id="magia" class="app-section">
-            <div class="section-header">
+            <div class="section-header-row">
                 <h2>Artes Arcanas</h2>
-                <div class="budget-info">Esencia: <span id="skill-budget">0</span></div>
+                <div class="budget-info">Esencia Libre: <span id="skill-budget">0</span></div>
             </div>
             <div id="skills-dynamic-list"></div>
-            <button onclick="addSkill()" class="btn-roll" style="background:var(--gold)">+ Aprender Arte</button>
+            <button onclick="addSkill()" class="btn-action">+ Aprender Nueva Arte</button>
+
+            <h2 style="margin-top:25px">Proezas y Talentos</h2>
+            <textarea id="stunts-area" placeholder="Describe aquí tus habilidades especiales..."></textarea>
         </section>
 
         <section id="lanzar" class="app-section">
             <div class="roll-card">
-                <select id="skill-selector"></select>
-                <button onclick="executeSelectedRoll()" class="btn-roll">✨ INVOCAR</button>
-                <div id="dice-result-v2" class="result-display"><div class="final-score">?</div></div>
+                <h2>Esfera de Adivinación</h2>
+                <div class="roll-controls">
+                    <select id="skill-selector" class="mystic-select"></select>
+                    <button onclick="executeSelectedRoll()" class="btn-roll">✨ INVOCAR</button>
+                </div>
+                <div id="dice-result-v2" class="result-display">
+                    <div class="final-score">?</div>
+                    <div class="dice-icons"></div>
+                </div>
             </div>
 
-            <div class="status-grid-large" style="margin-top:20px">
+            <div class="status-tracks">
                 <div class="track-group">
                     <strong>Estrés Físico</strong>
                     <div class="checks">
@@ -63,6 +87,25 @@
                     <input type="text" placeholder="Consecuencia Mental Grave">
                 </div>
             </div>
+            <ul id="roll-history" class="history-list"></ul>
+        </section>
+
+        <section id="archivo" class="app-section">
+            <h2>Crónicas de Viaje</h2>
+            <textarea id="notes-area" rows="6" placeholder="Escribe tu historia..."></textarea>
+            
+            <div class="management-card">
+                <h3>Configuración</h3>
+                <label>URL Imagen:</label>
+                <input type="text" id="char-img-url" placeholder="https://..." onchange="updateImage()">
+                <div class="file-buttons">
+                    <button onclick="exportCharacter()" class="btn-save">📜 Guardar Pergamino</button>
+                    <label class="btn-load">
+                        📖 Cargar <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
+                    </label>
+                </div>
+            </div>
+            <p class="credits">Francisco Carballo (Supervisor) | Gemini (Dev)</p>
         </section>
 
         <nav class="tab-bar">
@@ -75,9 +118,11 @@
             <button class="tab-item" onclick="showTab('lanzar', this)">
                 <i data-lucide="dices"></i><span>Juego</span>
             </button>
+            <button class="tab-item" onclick="showTab('archivo', this)">
+                <i data-lucide="scroll"></i><span>Archivo</span>
+            </button>
         </nav>
     </div>
-
     <script src="app.js"></script>
     <script>lucide.createIcons();</script>
 </body>
