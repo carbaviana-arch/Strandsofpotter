@@ -7,69 +7,99 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="parchment-container">
-        <header class="ornamental-header">
+    <div class="app-container">
+        <header class="app-header">
             <h1 class="main-title">Strands of Fate</h1>
-            <p class="sub-title">I solemnly swear...</p>
+            <p class="sub-title">I solemnly swear that I am up to no good</p>
         </header>
 
         <section id="perfil" class="app-section active">
-            <div style="text-align:center; margin: 20px 0;">
-                <img id="char-img-display" src="https://via.placeholder.com/150" style="width:120px; height:120px; border-radius:50%; border:3px solid var(--gold);">
-                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago" style="text-align:center;">
+            <div class="avatar-section">
+                <img id="char-img-display" src="https://via.placeholder.com/150?text=Mago" class="avatar-img">
+                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago">
             </div>
-            <div class="input-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <input type="text" id="char-concept" placeholder="Concepto">
-                <input type="number" id="recovery-val" placeholder="Recuperación" oninput="updateSkillBudget()">
+            
+            <div class="stats-grid">
+                <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
+                <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
+                <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" oninput="updateSkillBudget()"></div>
+                <div class="fate-counter">
+                    <label>Destino</label>
+                    <div class="counter-controls">
+                        <button onclick="updateFate(-1)">-</button>
+                        <span id="fate-display">3</span>
+                        <button onclick="updateFate(1)">+</button>
+                    </div>
+                </div>
             </div>
-            <h3>Aspectos</h3>
-            <div id="aspects-list">
-                <input type="text" class="aspect-input" placeholder="Aspecto Principal">
-                <input type="text" class="aspect-input" placeholder="Vínculo">
-                <input type="text" class="aspect-input" placeholder="Problema">
+
+            <div class="aspects-box">
+                <h2>Vínculos y Esencia</h2>
+                <input type="text" class="aspect-input" placeholder="Aspecto Definidor">
+                <input type="text" class="aspect-input" placeholder="Vínculo de Sangre">
+                <input type="text" class="aspect-input" placeholder="Problema / Debilidad">
             </div>
         </section>
 
         <section id="magia" class="app-section">
-            <h2>Artes Arcanas</h2>
-            <div style="font-family:'MedievalSharp'; margin-bottom:10px;">Esencia Libre: <span id="skill-budget">0</span></div>
+            <div class="section-header">
+                <h2>Artes Arcanas</h2>
+                <div class="budget-info">Esencia: <span id="skill-budget">0</span></div>
+            </div>
             <div id="skills-dynamic-list"></div>
-            <button onclick="addSkill()" style="width:100%; margin-top:15px;">+ Aprender Arte</button>
-            <h2 style="margin-top:30px;">Proezas</h2>
-            <textarea id="stunts-area" style="height:150px;"></textarea>
+            <button onclick="addSkill()" class="btn-add">+ Aprender Nueva Arte</button>
+
+            <h2 style="margin-top:25px">Proezas y Talentos</h2>
+            <textarea id="stunts-area" placeholder="Describe aquí tus habilidades especiales..."></textarea>
         </section>
 
         <section id="lanzar" class="app-section">
-            <div class="roll-altar">
+            <div class="roll-card">
                 <h2>Esfera de Adivinación</h2>
-                <select id="skill-selector"></select>
-                <button onclick="executeSelectedRoll()" style="width:100%; margin-top:10px;">✨ Invocar Destino</button>
-                <div id="dice-result-v2">
+                <div class="roll-selector-wrapper">
+                    <select id="skill-selector" class="mystic-select">
+                        <option value="0">Concentración Pura (+0)</option>
+                    </select>
+                    <button onclick="executeSelectedRoll()" class="btn-roll">✨ INVOCAR</button>
+                </div>
+                
+                <div id="dice-result-v2" class="result-display">
                     <div class="final-score">?</div>
+                    <div class="dice-icons"></div>
                 </div>
             </div>
-            <h3>Historial</h3>
-            <ul id="roll-history" style="list-style:none; padding:0; font-size:0.9rem;"></ul>
-        </section>
 
-        <section id="ajustes" class="app-section">
-            <h2>Ajustes del Pergamino</h2>
-            <label>Imagen del Espejo (URL):</label>
-            <input type="text" id="char-img-url" onchange="updateImage()">
-            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-                <button onclick="exportCharacter()">📜 Guardar en Dispositivo</button>
-                <label style="background:var(--gold); color:white; padding:12px; text-align:center; border-radius:8px; cursor:pointer;">
-                    📖 Cargar Archivo
-                    <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
-                </label>
+            <div class="status-tracks">
+                <h3>Estado y Daño</h3>
+                <div class="track"><span>Físico</span><div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
+                <div class="track"><span>Mental</span><div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
             </div>
+            
+            <ul id="roll-history" class="history-list"></ul>
         </section>
 
-        <nav class="mobile-nav">
-            <a href="#" class="nav-item active" onclick="showSection('perfil', this)">👤<span>Perfil</span></a>
-            <a href="#" class="nav-item" onclick="showSection('magia', this)">🪄<span>Magia</span></a>
-            <a href="#" class="nav-item" onclick="showSection('lanzar', this)">🎲<span>Dados</span></a>
-            <a href="#" class="nav-item" onclick="showSection('ajustes', this)">⚙️<span>Ajustes</span></a>
+        <section id="archivo" class="app-section">
+            <h2>Crónicas de Viaje</h2>
+            <textarea id="notes-area" rows="6" placeholder="Escribe tu historia..."></textarea>
+            
+            <div class="management-card">
+                <h3>Gestión del Pergamino</h3>
+                <input type="text" id="char-img-url" placeholder="URL Imagen del Personaje" onchange="updateImage()">
+                <div class="file-buttons">
+                    <button onclick="exportCharacter()" class="btn-save">📜 Guardar</button>
+                    <label class="btn-load">
+                        📖 Cargar <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none">
+                    </label>
+                </div>
+            </div>
+            <p class="credits">Francisco Carballo (Supervisor) | Gemini (Dev)</p>
+        </section>
+
+        <nav class="tab-bar">
+            <button class="tab-item active" onclick="showTab('perfil', this)">👤<span>Perfil</span></button>
+            <button class="tab-item" onclick="showTab('magia', this)">🪄<span>Magia</span></button>
+            <button class="tab-item" onclick="showTab('lanzar', this)">🎲<span>Dados</span></button>
+            <button class="tab-item" onclick="showTab('archivo', this)">📜<span>Archivo</span></button>
         </nav>
     </div>
     <script src="app.js"></script>
