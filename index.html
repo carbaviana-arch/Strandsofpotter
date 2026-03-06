@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strands of Fate 2.0 - Mystic Arcana</title>
+    <title>Strands of Fate 3.5 - Mystic Arcana</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="parchment-container">
-        <nav class="magical-toolbar">
-            <div class="file-management">
-                <button onclick="exportCharacter()">📜 Guardar Pergamino</button>
-                <label class="custom-file-upload">
-                    <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)">
-                    📖 Cargar Antiguo
-                </label>
-            </div>
+        <header class="ornamental-header">
+            <div class="ornament top"></div>
+            <h1 class="main-title">Strands of Fate</h1>
+            <p class="sub-title">Grimorio de Personaje</p>
+            <div class="ornament bottom"></div>
+        </header>
+
+        <nav class="magical-status-bar">
             <div class="fate-points-shield">
-                <span>Puntos Fate:</span>
-                <button onclick="updateFate(-1)">-</button>
-                <span id="fate-display">3</span>
-                <button onclick="updateFate(1)">+</button>
+                <span>Puntos de Destino</span>
+                <div class="fate-controls">
+                    <button onclick="updateFate(-1)">-</button>
+                    <span id="fate-display">3</span>
+                    <button onclick="updateFate(1)">+</button>
+                </div>
             </div>
         </nav>
 
-        <header class="character-header">
+        <div class="character-identity">
             <div class="avatar-frame">
-                <img id="char-img-display" src="https://via.placeholder.com/150?text=Avatar" alt="Retrato">
-                <input type="text" id="char-img-url" placeholder="URL Imagen" onchange="updateImage()">
+                <img id="char-img-display" src="https://via.placeholder.com/150?text=Retrato" alt="Retrato">
             </div>
             <div class="identity-fields">
-                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Personaje">
+                <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago/Bruja">
                 <div class="sub-fields">
                     <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
                     <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
                     <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" oninput="updateSkillBudget()"></div>
-                    <div class="budget-badge">Esencia Libre: <span id="skill-budget">0</span></div>
+                    <div class="budget-badge">Esencia: <span id="skill-budget">0</span></div>
                 </div>
             </div>
-        </header>
+        </div>
 
         <div class="main-content">
             <aside class="left-column">
@@ -50,63 +51,74 @@
                         <input type="text" class="aspect-input" placeholder="Vínculo Social">
                         <input type="text" class="aspect-input" placeholder="Debilidad Oculta">
                         <h3 class="mini-title">Proeza Arcana</h3>
-                        <textarea id="stunts-area" class="stunt-input" placeholder="Describe tu habilidad única aquí..."></textarea>
+                        <textarea id="stunts-area" class="stunt-input" placeholder="Describe tu habilidad única..."></textarea>
                     </div>
                 </section>
 
                 <section class="box-section">
-                    <h2>Habilidades (Artes)</h2>
+                    <h2>Artes (Habilidades)</h2>
                     <div id="skills-dynamic-list"></div>
-                    <button onclick="addSkill()" class="btn-secondary">+ Aprender Nueva Arte</button>
+                    <button onclick="addSkill()" class="btn-secondary">+ Aprender Arte</button>
                 </section>
             </aside>
 
             <main class="right-column">
                 <section class="box-section roll-altar">
-                    <h2 style="color: var(--magic-blue); border-color: var(--magic-blue);">Esfera de Adivinación</h2>
+                    <h2>Esfera de Adivinación</h2>
                     <div class="roll-controls">
                         <select id="skill-selector" class="mystic-select">
-                            <option value="0">Concentración Pura (+0)</option>
-                            </select>
+                            <option value="0">Tirada Pura (+0)</option>
+                        </select>
                         <button onclick="executeSelectedRoll()" class="btn-roll">✨ Invocar</button>
                     </div>
-                    
                     <div id="dice-result-v2" class="result-box">
                         <div class="final-score">?</div>
-                        <p style="font-style: italic; opacity: 0.5;">El éter está en calma...</p>
                     </div>
-
-                    <div class="history-scroll">
-                        <ul id="roll-history"></ul>
-                    </div>
+                    <ul id="roll-history" class="history-list"></ul>
                 </section>
 
-                <section class="box-section status-section">
+                <section class="box-section">
                     <h2>Estado y Daño</h2>
                     <div class="stress-container">
                         <div class="stress-track"><span>Cuerpo:</span> <div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
                         <div class="stress-track"><span>Mente:</span> <div class="checks"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></div></div>
                     </div>
                     <div class="consequences-list">
-                        <h3>Consecuencias</h3>
-                        <input type="text" placeholder="Leve (2): Ej. Raspón">
-                        <input type="text" placeholder="Moderada (4): Ej. Brazo roto">
-                        <input type="text" placeholder="Grave (6): Ej. Trauma mágico">
+                        <input type="text" placeholder="Leve (2)">
+                        <input type="text" placeholder="Moderada (4)">
+                        <input type="text" placeholder="Grave (6)">
                     </div>
                 </section>
 
                 <section class="box-section">
-                    <h2>Inventario Mágico</h2>
+                    <h2>Reliquias</h2>
                     <div id="items-list"></div>
-                    <button onclick="addItem()" class="btn-secondary">+ Nuevo Objeto</button>
+                    <button onclick="addItem()" class="btn-secondary">+ Añadir Objeto</button>
                 </section>
             </main>
         </div>
-        
+
         <section class="box-section full-width">
-            <h2>Crónicas y Notas</h2>
-            <textarea id="notes-area" rows="4" placeholder="Escribe aquí tus proezas..."></textarea>
+            <h2>Crónicas de Viaje</h2>
+            <textarea id="notes-area" rows="3" placeholder="El curso de la historia..."></textarea>
         </section>
+
+        <footer class="pergamino-footer">
+            <div class="footer-divider"></div>
+            <div class="management-panel">
+                <div class="image-config">
+                    <label>Espejo del Alma (URL Imagen):</label>
+                    <input type="text" id="char-img-url" placeholder="https://..." onchange="updateImage()">
+                </div>
+                <div class="file-actions">
+                    <button onclick="exportCharacter()" class="btn-save">📜 Sellar y Guardar Pergamino</button>
+                    <label class="custom-file-upload">
+                        <input type="file" id="importFile" accept=".json" onchange="importCharacter(event)">
+                        📖 Abrir Antiguo
+                    </label>
+                </div>
+            </div>
+        </footer>
     </div>
     <script src="app.js"></script>
 </body>
