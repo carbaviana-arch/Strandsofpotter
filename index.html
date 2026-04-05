@@ -49,6 +49,42 @@
                 <div id="habilidades-container"></div>
             </div>
 
+            <!-- Monedero -->
+            <div class="card">
+                <h2>Monedero</h2>
+                <div class="wallet-grid">
+                    <div class="wallet-item wallet-galleon">
+                        <div class="wallet-coin">🟡</div>
+                        <label>Galleones</label>
+                        <div class="wallet-controls">
+                            <button onclick="updateWallet('galleons',-1)">−</button>
+                            <input type="number" id="wallet-galleons" value="0" min="0" oninput="syncWalletDisplay()">
+                            <button onclick="updateWallet('galleons',1)">+</button>
+                        </div>
+                    </div>
+                    <div class="wallet-item wallet-sickle">
+                        <div class="wallet-coin">⚪</div>
+                        <label>Sickles</label>
+                        <div class="wallet-controls">
+                            <button onclick="updateWallet('sickles',-1)">−</button>
+                            <input type="number" id="wallet-sickles" value="0" min="0" oninput="syncWalletDisplay()">
+                            <button onclick="updateWallet('sickles',1)">+</button>
+                        </div>
+                        <span class="wallet-rate">17 = 1 Galeón</span>
+                    </div>
+                    <div class="wallet-item wallet-knut">
+                        <div class="wallet-coin">🟤</div>
+                        <label>Knuts</label>
+                        <div class="wallet-controls">
+                            <button onclick="updateWallet('knuts',-1)">−</button>
+                            <input type="number" id="wallet-knuts" value="0" min="0" oninput="syncWalletDisplay()">
+                            <button onclick="updateWallet('knuts',1)">+</button>
+                        </div>
+                        <span class="wallet-rate">29 = 1 Sickle</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Vínculos y Esencia — 5 fijos -->
             <div class="card aspects-box">
                 <h2>Vínculos y Esencia</h2>

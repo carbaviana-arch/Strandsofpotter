@@ -286,11 +286,16 @@ function buildAspectos() {
     container.innerHTML = '';
     ASPECT_DEFS.forEach(def => {
         const div = document.createElement('div');
-        div.className = 'dynamic-row aspect-fixed' + (def.tipo === 'negativo' ? ' aspect-negativo' : '');
+        div.className = 'aspect-fixed-block' + (def.tipo === 'negativo' ? ' aspect-negativo' : '');
         div.innerHTML = `
-            <div class="aspect-tipo-badge">${def.tipo === 'negativo' ? '⚠ Desventaja' : '✦'}</div>
-            <input type="text" class="text-input" id="${def.id}" placeholder="${def.placeholder}" style="flex:1">
-            <input type="number" class="mod-input" id="${def.id}-mod" value="0" min="-5" max="5">
+            <div class="aspect-label-row">
+                <span class="aspect-tipo-badge">${def.tipo === 'negativo' ? '⚠' : '✦'}</span>
+                <input type="text" class="aspect-title-input" id="${def.id}-title" placeholder="${def.placeholder}">
+            </div>
+            <div class="aspect-value-row">
+                <input type="text" class="text-input" id="${def.id}" placeholder="Describe este aspecto…" style="flex:1">
+                <input type="number" class="mod-input" id="${def.id}-mod" value="0" min="-5" max="5">
+            </div>
         `;
         container.appendChild(div);
     });
@@ -298,6 +303,7 @@ function buildAspectos() {
 
 function getAspectosData() {
     return ASPECT_DEFS.map(def => ({
+        title: document.getElementById(def.id + '-title')?.value || '',
         t: document.getElementById(def.id)?.value || '',
         m: parseInt(document.getElementById(def.id + '-mod')?.value) || 0,
         tipo: def.tipo,
@@ -309,9 +315,11 @@ function setAspectosData(arr) {
     arr.forEach((a, i) => {
         if (!ASPECT_DEFS[i]) return;
         const id = ASPECT_DEFS[i].id;
-        const el = document.getElementById(id);
+        const titleEl = document.getElementById(id + '-title');
+        const el  = document.getElementById(id);
         const mel = document.getElementById(id + '-mod');
-        if (el) el.value = a.t || '';
+        if (titleEl) titleEl.value = a.title || '';
+        if (el)  el.value  = a.t || '';
         if (mel) mel.value = a.m || 0;
     });
 }
@@ -452,6 +460,24 @@ function buildSkillSelector() {
     const selector = document.getElementById('skill-selector');
     if (!selector) return;
     selector.innerHTML = '<option value="0">Concentración (+0)</option>';
+
+    // Grupo: Habilidades
+    const habGroup = document.createElement('optgroup');
+    habGroup.label = '── Habilidades ──';
+    HABILIDADES_DEF.forEach(h => {
+        const el = document.getElementById('hab-' + h.key);
+        const val = el ? (parseInt(el.value) || 0) : 0;
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.text  = `${h.label} (+${val})`;
+        habGroup.appendChild(opt);
+    });
+    selector.appendChild(habGroup);
+
+    // Grupo: Artes Arcanas
+    const arteGroup = document.createElement('optgroup');
+    arteGroup.label = '── Artes Arcanas ──';
+    let hasArtes = false;
     for (let i = 0; i < 5; i++) {
         const sel = document.getElementById('arte-' + i);
         const niv = document.getElementById('arte-nivel-' + i);
@@ -459,9 +485,11 @@ function buildSkillSelector() {
             const opt = document.createElement('option');
             opt.value = niv ? (parseInt(niv.value) || 0) : 0;
             opt.text  = `${sel.value} (+${opt.value})`;
-            selector.add(opt);
+            arteGroup.appendChild(opt);
+            hasArtes = true;
         }
     }
+    if (hasArtes) selector.appendChild(arteGroup);
 }
 
 function buildRollModifiers() {
@@ -511,15 +539,18 @@ function buildRollModifiers() {
             <input type="number" class="mod-input-roll" id="rm-varita" value="${varitaBonus}" readonly>
         </div>`;
 
-    // Punto de Destino (opcional)
+    // Puntos de Destino (contador ajustable)
+    const pdMax = parseInt(document.getElementById('fate-display')?.innerText) || 0;
     panel.innerHTML += `
         <div class="mod-row mod-row-pd">
-            <label class="mod-label">
-                <input type="checkbox" id="rm-pd-check" onchange="updateRollTotals()">
-                ✦ Punto de Destino
-                <span class="pd-available">(Disponibles: <span id="rm-pd-count">${document.getElementById('fate-display')?.innerText || 0}</span>)</span>
+            <label class="mod-label">✦ Puntos de Destino
+                <span class="pd-available">(Disp: <span id="rm-pd-count">${pdMax}</span>)</span>
             </label>
-            <input type="number" class="mod-input-roll" id="rm-pd" value="1" readonly>
+            <div class="pd-counter">
+                <button class="pd-btn" onclick="changePD(-1)">−</button>
+                <span id="rm-pd" class="pd-val">0</span>
+                <button class="pd-btn" onclick="changePD(1)">+</button>
+            </div>
         </div>`;
 
     panel.innerHTML += `<div class="mod-total-row"><span>Total modificadores</span><span id="rm-total" class="mod-total-val">+0</span></div>`;
@@ -537,16 +568,25 @@ function updateRollTotals() {
     const aspVal   = parseInt(document.getElementById('rm-aspecto')?.value)  || 0;
     const hecVal   = parseInt(document.getElementById('rm-hechizo')?.value)   || 0;
     const varVal   = parseInt(document.getElementById('rm-varita')?.value)    || 0;
-    const pdCheck  = document.getElementById('rm-pd-check')?.checked;
-    const pdVal    = pdCheck ? 1 : 0;
+    const pdVal    = parseInt(document.getElementById('rm-pd')?.textContent)  || 0;
 
-    // Actualizar count de PD
+    // Actualizar count de PD disponibles
     const pdCount = document.getElementById('rm-pd-count');
     if (pdCount) pdCount.textContent = document.getElementById('fate-display')?.innerText || 0;
 
     const total    = arteVal + aspVal + hecVal + varVal + pdVal;
     const totalEl  = document.getElementById('rm-total');
     if (totalEl) totalEl.textContent = (total >= 0 ? '+' : '') + total;
+}
+
+function changePD(delta) {
+    const pdEl  = document.getElementById('rm-pd');
+    const pdMax = parseInt(document.getElementById('fate-display')?.innerText) || 0;
+    if (!pdEl) return;
+    const current = parseInt(pdEl.textContent) || 0;
+    const nuevo   = Math.max(0, Math.min(pdMax, current + delta));
+    pdEl.textContent = nuevo;
+    updateRollTotals();
 }
 
 function updateRollPanel() { buildRollPanel(); }
@@ -559,22 +599,23 @@ function executeSelectedRoll() {
     const aspMod   = parseInt(document.getElementById('rm-aspecto')?.value)     || 0;
     const hecMod   = parseInt(document.getElementById('rm-hechizo')?.value)     || 0;
     const varMod   = parseInt(document.getElementById('rm-varita')?.value)      || 0;
-    const pdCheck  = document.getElementById('rm-pd-check')?.checked;
+    const pdVal    = parseInt(document.getElementById('rm-pd')?.textContent)    || 0;
 
     // Consumir PD si aplica
-    if (pdCheck) {
-        const fateEl = document.getElementById('fate-display');
-        const fateVal = parseInt(fateEl?.innerText) || 0;
-        if (fateVal < 1) {
-            showToast('✦ No tienes Puntos de Destino disponibles.', 'fallo');
-            document.getElementById('rm-pd-check').checked = false;
-            updateRollTotals();
+    if (pdVal > 0) {
+        const fateEl  = document.getElementById('fate-display');
+        const fateAct = parseInt(fateEl?.innerText) || 0;
+        if (fateAct < pdVal) {
+            showToast(`✦ No tienes suficientes Puntos de Destino (necesitas ${pdVal}).`, 'fallo');
             return;
         }
-        fateEl.innerText = fateVal - 1;
+        fateEl.innerText = fateAct - pdVal;
+        // Reset contador PD a 0 tras consumir
+        const pdEl = document.getElementById('rm-pd');
+        if (pdEl) pdEl.textContent = '0';
         updateRollTotals();
     }
-    const pdMod = pdCheck ? 1 : 0;
+    const pdMod = pdVal;
 
     let sum = 0, dice = [];
     for (let i = 0; i < 4; i++) {
@@ -843,6 +884,36 @@ function updateFate(val) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  MONEDERO MÁGICO
+// ═══════════════════════════════════════════════════════
+function updateWallet(type, delta) {
+    const el = document.getElementById('wallet-' + type);
+    if (!el) return;
+    const val = Math.max(0, (parseInt(el.value) || 0) + delta);
+    el.value = val;
+}
+
+function syncWalletDisplay() { /* called on manual input, nothing extra needed */ }
+
+function getWalletData() {
+    return {
+        galleons: parseInt(document.getElementById('wallet-galleons')?.value) || 0,
+        sickles:  parseInt(document.getElementById('wallet-sickles')?.value)  || 0,
+        knuts:    parseInt(document.getElementById('wallet-knuts')?.value)    || 0,
+    };
+}
+
+function setWalletData(data) {
+    if (!data) return;
+    const g = document.getElementById('wallet-galleons');
+    const s = document.getElementById('wallet-sickles');
+    const k = document.getElementById('wallet-knuts');
+    if (g) g.value = data.galleons || 0;
+    if (s) s.value = data.sickles  || 0;
+    if (k) k.value = data.knuts    || 0;
+}
+
+// ═══════════════════════════════════════════════════════
 //  EXPORT / IMPORT JSON — COMPLETO
 // ═══════════════════════════════════════════════════════
 function exportCharacter() {
@@ -872,6 +943,7 @@ function exportCharacter() {
         items:       Array.from(document.querySelectorAll('#items-dynamic-list .dynamic-row'))
                          .map(r => ({ t: r.querySelector('.text-input').value, m: r.querySelector('.mod-input').value })),
         spells:      spellsAprendidos,
+        wallet:      getWalletData(),
         stressPhys:  Array.from(document.querySelectorAll('.track-group:first-child .checks input[type=checkbox]')).map(cb => cb.checked),
         stressMent:  Array.from(document.querySelectorAll('.track-group:last-child .checks input[type=checkbox]')).map(cb => cb.checked),
     };
@@ -925,6 +997,8 @@ function importCharacter(event) {
         // Hechizos
         spellsAprendidos = d.spells || [];
         renderHechizosAprendidos();
+        // Monedero
+        setWalletData(d.wallet);
         // Estrés
         if (d.stressPhys) {
             document.querySelectorAll('.track-group:first-child .checks input[type=checkbox]')

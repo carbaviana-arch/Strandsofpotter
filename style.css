@@ -1083,3 +1083,170 @@ input[type=number]::-webkit-outer-spin-button { opacity: 0.3; }
     .tab-item svg { width: 16px; height: 16px; }
     .tab-item span { font-size: 0.52rem; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   MONEDERO MÁGICO
+═══════════════════════════════════════════════════════ */
+.wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.wallet-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 6px;
+}
+
+.wallet-galleon { border-color: var(--gold-dim); }
+.wallet-sickle  { border-color: #4a4a4a; }
+.wallet-knut    { border-color: #5a3a20; }
+
+.wallet-coin { font-size: 1.4rem; }
+
+.wallet-item label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+}
+
+.wallet-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.wallet-controls button {
+    background: var(--surface2);
+    border: 1px solid var(--border-light);
+    color: var(--gold);
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wallet-controls button:active { background: var(--gold-glow); }
+
+.wallet-controls input[type=number] {
+    width: 44px;
+    text-align: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--cream);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    padding: 2px 0;
+}
+
+.wallet-rate {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VÍNCULOS Y ESENCIA — aspect-fixed-block rediseñado
+═══════════════════════════════════════════════════════ */
+.aspect-fixed-block {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.aspect-fixed-block.aspect-negativo {
+    border-left: 3px solid var(--blood);
+}
+
+.aspect-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.aspect-tipo-badge {
+    color: var(--gold);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.aspect-negativo .aspect-tipo-badge { color: var(--blood-light); }
+
+.aspect-title-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    padding: 2px 4px;
+    outline: none;
+}
+
+.aspect-negativo .aspect-title-input { color: var(--blood-light); }
+
+.aspect-title-input::placeholder { color: var(--text-dim); font-style: italic; }
+
+.aspect-title-input:focus { border-bottom-color: var(--gold); }
+
+.aspect-value-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PD COUNTER en panel de tirada
+═══════════════════════════════════════════════════════ */
+.pd-counter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.pd-btn {
+    background: var(--surface3);
+    border: 1px solid var(--border-light);
+    color: var(--gold);
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pd-btn:active { background: var(--gold-glow); }
+
+.pd-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    min-width: 22px;
+    text-align: center;
+}
