@@ -428,49 +428,94 @@ select option { background: var(--surface2); }
 }
 .dynamic-row > button[style*="blood"]:hover { color: var(--blood-light) !important; }
 
-/* ── ROLL CARD ── */
+/* ═══════════════════════════════════════════════════════
+   ESFERA DE ACCIÓN — controles
+═══════════════════════════════════════════════════════ */
 .roll-card {
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px 18px;
+    padding: 18px 16px;
     text-align: center;
     margin-bottom: 16px;
 }
 
-.roll-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin: 14px 0;
+.action-block {
+    margin-bottom: 10px;
+    text-align: left;
 }
-.roll-controls select { flex: 1; }
+
+.action-label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+}
+
+.action-row-double {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.action-block-half { text-align: left; }
+
+.action-num-input {
+    width: 100% !important;
+    background: var(--surface3) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 8px 10px !important;
+    text-align: center;
+    font-size: 1rem !important;
+    color: var(--gold) !important;
+    font-weight: 400 !important;
+}
+.action-num-input:focus { border-color: var(--gold-dim) !important; }
 
 .mystic-select {
     font-family: 'Lato', sans-serif !important;
     font-size: 0.88rem !important;
+    width: 100%;
+    border-radius: var(--radius-sm);
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    padding: 8px 30px 8px 12px;
+    color: var(--text);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235e5650' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
 }
+.mystic-select:focus { border-color: var(--gold-dim); outline: none; }
+.mystic-select option { background: var(--surface2); }
 
 .btn-roll {
+    width: 100%;
     background: var(--blood);
     color: var(--cream);
     border: none;
     border-radius: var(--radius-sm);
-    padding: 10px 18px;
+    padding: 13px 18px;
     font-family: 'Lato', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-    flex-shrink: 0;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    transition: background 0.2s, transform 0.1s;
 }
-.btn-roll:hover { background: var(--blood-light); }
+.btn-roll:hover  { background: var(--blood-light); }
+.btn-roll:active { transform: scale(0.98); }
 
+/* ── RESULTADO ── */
 .result-display {
-    padding: 10px 0 4px;
+    padding: 12px 0 4px;
 }
 
 .final-score {
@@ -480,7 +525,15 @@ select option { background: var(--surface2); }
     color: var(--gold);
     line-height: 1;
     margin-bottom: 6px;
+    transition: color 0.3s;
 }
+
+@keyframes score-pop {
+    0%   { transform: scale(0.7); opacity: 0.4; }
+    60%  { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.score-pop { animation: score-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
 .dice-icons {
     font-size: 0.85rem;
@@ -488,6 +541,26 @@ select option { background: var(--surface2); }
     color: var(--cream-dim);
     font-family: 'Lato', sans-serif;
     min-height: 1.2em;
+    margin-bottom: 8px;
+}
+
+.roll-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 4px;
+    text-align: left;
+}
+
+.breakdown-line {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    padding: 1px 0;
 }
 
 /* ── STATUS TRACKS ── */
@@ -641,9 +714,7 @@ select option { background: var(--surface2); }
     transition: color 0.2s;
 }
 .tab-item svg { width: 18px; height: 18px; stroke-width: 1.5; }
-.tab-item.active {
-    color: var(--gold);
-}
+.tab-item.active { color: var(--gold); }
 .tab-item span {
     font-size: 0.58rem;
     font-family: 'Lato', sans-serif;
@@ -653,9 +724,8 @@ select option { background: var(--surface2); }
 }
 
 /* ═══════════════════════════════════════════════════════
-   LIBRO DE HECHIZOS — hechizos aprendidos
+   LIBRO DE HECHIZOS
 ═══════════════════════════════════════════════════════ */
-
 .spell-empty {
     text-align: center;
     font-size: 0.82rem;
@@ -672,7 +742,6 @@ select option { background: var(--surface2); }
 }
 .spell-card:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-.spell-card-header { }
 .spell-card-top {
     display: flex;
     justify-content: space-between;
@@ -723,7 +792,6 @@ select option { background: var(--surface2); }
     line-height: 1.4;
 }
 
-/* ── Botón abrir grimorio ── */
 .btn-grimorio {
     background: transparent;
     border: 1px solid var(--gold-dim);
@@ -741,7 +809,7 @@ select option { background: var(--surface2); }
 .btn-grimorio:hover { background: var(--gold-glow); border-color: var(--gold); }
 
 /* ═══════════════════════════════════════════════════════
-   GRIMORIO — panel desplegable
+   GRIMORIO
 ═══════════════════════════════════════════════════════ */
 .grimorio-panel {
     display: none;
@@ -941,7 +1009,7 @@ select option { background: var(--surface2); }
 }
 
 /* ═══════════════════════════════════════════════════════
-   TOAST DE NOTIFICACIÓN
+   TOAST
 ═══════════════════════════════════════════════════════ */
 .spell-toast {
     position: fixed;
@@ -972,3 +1040,41 @@ select option { background: var(--surface2); }
 }
 .spell-toast-exito { border-color: var(--gold-dim); color: var(--gold); }
 .spell-toast-fallo { border-color: var(--blood); color: #e87070; }
+
+/* ═══════════════════════════════════════════════════════
+   PARTÍCULAS MÁGICAS
+═══════════════════════════════════════════════════════ */
+@keyframes particle-fly {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+        opacity: 0;
+    }
+}
+
+.particle {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 9997;
+}
+
+.spell-flash {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9996;
+    animation: flash-fade 0.45s ease-out forwards;
+}
+
+@keyframes flash-fade {
+    0%   { opacity: 1;   transform: translate(-50%, -50%) scale(0.5); }
+    40%  { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.8); }
+}
