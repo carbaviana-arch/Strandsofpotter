@@ -9,20 +9,30 @@
 </head>
 <body>
     <div class="app-container">
+
+        <!-- HEADER -->
         <header class="app-header">
             <h1 class="main-title">Strands <em>of</em> Fate</h1>
             <p class="sub-title">I solemnly swear that I am up to no good</p>
             <input type="text" id="campaign-name" class="campaign-input" placeholder="Nombre de la Campaña…">
         </header>
+
+        <!-- ══════════════════════════════════════════
+             PESTAÑA PERFIL
+        ══════════════════════════════════════════ -->
         <section id="perfil" class="app-section active">
+
+            <!-- Avatar + nombre -->
             <div class="avatar-section">
                 <img id="char-img-display" src="https://via.placeholder.com/150?text=Mago" class="avatar-img">
                 <input type="text" id="char-name" class="name-input" placeholder="Nombre del Mago">
             </div>
+
+            <!-- Stats básicos -->
             <div class="stats-grid">
                 <div class="input-group"><label>Origen</label><input type="text" id="char-age"></div>
                 <div class="input-group"><label>Concepto</label><input type="text" id="char-concept"></div>
-                <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" value="0" oninput="updateSkillBudget()"></div>
+                <div class="input-group"><label>Recuperación</label><input type="number" id="recovery-val" value="3" oninput="updateSkillBudget()"></div>
                 <div class="fate-counter">
                     <label>Puntos Destino</label>
                     <div class="counter-controls">
@@ -32,23 +42,42 @@
                     </div>
                 </div>
             </div>
-            <div class="aspects-box">
-                <div class="section-header-row">
-                    <h2>Vínculos y Esencia</h2>
-                    <button onclick="addAspect()" class="btn-add-mini">+</button>
-                </div>
+
+            <!-- Habilidades -->
+            <div class="card">
+                <h2>Habilidades</h2>
+                <div id="habilidades-container"></div>
+            </div>
+
+            <!-- Vínculos y Esencia — 5 fijos -->
+            <div class="card aspects-box">
+                <h2>Vínculos y Esencia</h2>
                 <div id="aspects-dynamic-list"></div>
             </div>
+
         </section>
+
+        <!-- ══════════════════════════════════════════
+             PESTAÑA MAGIA
+        ══════════════════════════════════════════ -->
         <section id="magia" class="app-section">
+
+            <!-- Artes Arcanas — 5 slots -->
             <div class="card">
                 <div class="section-header-row">
                     <h2>Artes Arcanas</h2>
                     <div class="budget-info">Esencia libre: <span id="skill-budget">0</span></div>
                 </div>
                 <div id="skills-dynamic-list"></div>
-                <button onclick="addSkill()" class="btn-action">+ Aprender Arte</button>
             </div>
+
+            <!-- Varita -->
+            <div class="card">
+                <h2>Varita Mágica</h2>
+                <div id="varita-container"></div>
+            </div>
+
+            <!-- Reliquias -->
             <div class="card">
                 <div class="section-header-row">
                     <h2>Reliquias y Objetos</h2>
@@ -56,12 +85,16 @@
                 </div>
                 <div id="items-dynamic-list"></div>
             </div>
+
+            <!-- Libro de Hechizos -->
             <div class="card">
                 <div class="section-header-row">
                     <h2>Libro de Hechizos</h2>
                     <button class="btn-grimorio" onclick="toggleGrimorio()">📖 Grimorio</button>
                 </div>
                 <div id="spells-dynamic-list"></div>
+
+                <!-- Panel Grimorio -->
                 <div id="grimorio-panel" class="grimorio-panel">
                     <div class="grimorio-header">
                         <span class="grimorio-title">✦ Grimorio de Hechizos</span>
@@ -72,42 +105,63 @@
                     </div>
                     <div class="grimorio-filtros">
                         <div class="filtros-scroll">
-                            <button class="filtro-tipo-btn active" data-tipo="Todos" onclick="setFiltroTipo('Todos')">Todos</button>
-                            <button class="filtro-tipo-btn" data-tipo="Ataque" onclick="setFiltroTipo('Ataque')">Ataque</button>
-                            <button class="filtro-tipo-btn" data-tipo="Defensivo" onclick="setFiltroTipo('Defensivo')">Defensivo</button>
-                            <button class="filtro-tipo-btn" data-tipo="Control" onclick="setFiltroTipo('Control')">Control</button>
-                            <button class="filtro-tipo-btn" data-tipo="Curación" onclick="setFiltroTipo('Curación')">Curación</button>
-                            <button class="filtro-tipo-btn" data-tipo="Utilidad" onclick="setFiltroTipo('Utilidad')">Utilidad</button>
-                            <button class="filtro-tipo-btn" data-tipo="Transformación" onclick="setFiltroTipo('Transformación')">Transf.</button>
-                            <button class="filtro-tipo-btn" data-tipo="Transporte" onclick="setFiltroTipo('Transporte')">Transp.</button>
+                            <button class="filtro-tipo-btn active" data-tipo="Todos"          onclick="setFiltroTipo('Todos')">Todos</button>
+                            <button class="filtro-tipo-btn" data-tipo="Ataque"                onclick="setFiltroTipo('Ataque')">Ataque</button>
+                            <button class="filtro-tipo-btn" data-tipo="Defensivo"             onclick="setFiltroTipo('Defensivo')">Defensivo</button>
+                            <button class="filtro-tipo-btn" data-tipo="Control"               onclick="setFiltroTipo('Control')">Control</button>
+                            <button class="filtro-tipo-btn" data-tipo="Curación"              onclick="setFiltroTipo('Curación')">Curación</button>
+                            <button class="filtro-tipo-btn" data-tipo="Utilidad"              onclick="setFiltroTipo('Utilidad')">Utilidad</button>
+                            <button class="filtro-tipo-btn" data-tipo="Transformación"        onclick="setFiltroTipo('Transformación')">Transf.</button>
+                            <button class="filtro-tipo-btn" data-tipo="Transporte"            onclick="setFiltroTipo('Transporte')">Transp.</button>
                         </div>
                     </div>
                     <div class="grimorio-difs">
                         <button class="filtro-dif-btn active" data-dif="0" onclick="setFiltroDif(0)">Todos</button>
-                        <button class="filtro-dif-btn" data-dif="1" onclick="setFiltroDif(1)">★☆☆ Fácil</button>
-                        <button class="filtro-dif-btn" data-dif="2" onclick="setFiltroDif(2)">★★☆ Medio</button>
-                        <button class="filtro-dif-btn" data-dif="3" onclick="setFiltroDif(3)">★★★ Difícil</button>
+                        <button class="filtro-dif-btn" data-dif="1"        onclick="setFiltroDif(1)">★☆☆ Fácil</button>
+                        <button class="filtro-dif-btn" data-dif="2"        onclick="setFiltroDif(2)">★★☆ Medio</button>
+                        <button class="filtro-dif-btn" data-dif="3"        onclick="setFiltroDif(3)">★★★ Difícil</button>
                     </div>
                     <div id="grimorio-lista" class="grimorio-lista"></div>
                 </div>
             </div>
+
+            <!-- Proezas -->
             <div class="card">
                 <h2>Proezas y Talentos</h2>
                 <textarea id="stunts-area" placeholder="Describe aquí tus proezas…"></textarea>
             </div>
+
         </section>
+
+        <!-- ══════════════════════════════════════════
+             PESTAÑA JUEGO
+        ══════════════════════════════════════════ -->
         <section id="lanzar" class="app-section">
+
             <div class="roll-card">
                 <h2>Esfera de Adivinación</h2>
+
+                <!-- Selector Arte -->
                 <div class="roll-controls">
                     <select id="skill-selector" class="mystic-select"></select>
                     <button onclick="executeSelectedRoll()" class="btn-roll">✨ Invocar</button>
                 </div>
+
+                <!-- Modificadores de tirada -->
+                <div class="roll-mods-panel">
+                    <div class="roll-mods-title">Modificadores</div>
+                    <div id="roll-modifiers"></div>
+                </div>
+
+                <!-- Resultado -->
                 <div id="dice-result-v2" class="result-display">
                     <div class="final-score">?</div>
                     <div class="dice-icons"></div>
+                    <div id="roll-breakdown" class="roll-breakdown"></div>
                 </div>
             </div>
+
+            <!-- Estrés -->
             <div class="status-tracks">
                 <div class="track-group">
                     <strong>Estrés Físico</strong>
@@ -116,8 +170,8 @@
                     </div>
                     <div class="consequences-stack">
                         <input type="text" id="phys-mild" placeholder="Consecuencia leve (F)" class="consequence-mild">
-                        <input type="text" id="phys-mod" placeholder="Consecuencia moderada (F)" class="consequence-mod">
-                        <input type="text" id="phys-sev" placeholder="Consecuencia grave (F)" class="consequence-sev">
+                        <input type="text" id="phys-mod"  placeholder="Consecuencia moderada (F)" class="consequence-mod">
+                        <input type="text" id="phys-sev"  placeholder="Consecuencia grave (F)" class="consequence-sev">
                     </div>
                 </div>
                 <div class="track-group">
@@ -127,12 +181,17 @@
                     </div>
                     <div class="consequences-stack">
                         <input type="text" id="ment-mild" placeholder="Consecuencia leve (M)" class="consequence-mild">
-                        <input type="text" id="ment-mod" placeholder="Consecuencia moderada (M)" class="consequence-mod">
-                        <input type="text" id="ment-sev" placeholder="Consecuencia grave (M)" class="consequence-sev">
+                        <input type="text" id="ment-mod"  placeholder="Consecuencia moderada (M)" class="consequence-mod">
+                        <input type="text" id="ment-sev"  placeholder="Consecuencia grave (M)" class="consequence-sev">
                     </div>
                 </div>
             </div>
+
         </section>
+
+        <!-- ══════════════════════════════════════════
+             PESTAÑA ARCHIVO
+        ══════════════════════════════════════════ -->
         <section id="archivo" class="app-section">
             <div class="card">
                 <h2>Crónicas de Viaje</h2>
@@ -147,14 +206,17 @@
                     <label class="btn-load">📖 Cargar<input type="file" id="importFile" accept=".json" onchange="importCharacter(event)" style="display:none"></label>
                 </div>
             </div>
-            <p class="credits">Francisco Carballo (Supervisor) · Gemini (Dev) · Claude (Diseño v7.1)</p>
+            <p class="credits">Francisco Carballo (Supervisor) · Claude (v8.0)</p>
         </section>
+
+        <!-- TAB BAR -->
         <nav class="tab-bar">
             <button class="tab-item active" onclick="showTab('perfil', this)"><i data-lucide="user"></i><span>Perfil</span></button>
-            <button class="tab-item" onclick="showTab('magia', this)"><i data-lucide="wand-2"></i><span>Magia</span></button>
-            <button class="tab-item" onclick="showTab('lanzar', this)"><i data-lucide="dices"></i><span>Juego</span></button>
-            <button class="tab-item" onclick="showTab('archivo', this)"><i data-lucide="scroll"></i><span>Archivo</span></button>
+            <button class="tab-item"        onclick="showTab('magia', this)"><i data-lucide="wand-2"></i><span>Magia</span></button>
+            <button class="tab-item"        onclick="showTab('lanzar', this)"><i data-lucide="dices"></i><span>Juego</span></button>
+            <button class="tab-item"        onclick="showTab('archivo', this)"><i data-lucide="scroll"></i><span>Archivo</span></button>
         </nav>
+
     </div>
     <script src="app.js"></script>
     <script>lucide.createIcons();</script>
